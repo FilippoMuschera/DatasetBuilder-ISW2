@@ -16,8 +16,8 @@ public class Release {
     private int index;
     private int id;
     private String name;
-    private Date lastDate;
-    private Date firstDate;
+    private Date lastDate; //data in cui la release viene effettivamente rilasciata
+    private Date firstDate; //data in cui iniziano i commit di questa release
     private ReleaseCommits releaseCommits;
 
 

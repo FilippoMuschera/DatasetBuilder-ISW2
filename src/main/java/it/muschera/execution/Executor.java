@@ -8,6 +8,7 @@ import it.muschera.model.JavaClass;
 import it.muschera.model.JiraTicket;
 import it.muschera.model.Release;
 import it.muschera.model.ReleaseCommits;
+import it.muschera.util.TicketUtil;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
 import java.io.IOException;
@@ -84,18 +85,24 @@ public class Executor {
             e.printStackTrace();
         }
 
-        //Debug purposes
-        for (JiraTicket t : allTickets) {
-            out.println(t.getKey());
-        }
+        //temporary, for debug
         out.println("TICKET LIST SIZE =  " + allTickets.size());
 
     }
 
 
     public void getConsistentTickets() {
+
+        this.consistentTickets = new ArrayList<>();
+
         for (JiraTicket ticket : this.allTickets) {
-            if ()
+            if (TicketUtil.isConsistent(ticket)){
+                this.consistentTickets.add(ticket);
+            }
         }
+
+        //temporary, For debug
+        out.println("TOTAL NUMBER OF CONSISTENT TICKET IS " + this.consistentTickets.size());
+
     }
 }

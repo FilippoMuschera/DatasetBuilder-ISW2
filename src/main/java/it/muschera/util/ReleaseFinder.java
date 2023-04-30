@@ -21,7 +21,7 @@ public class ReleaseFinder {
     public static Release findByDate(Date ticketDate, List<Release> releaseList){
 
         for (Release release : releaseList){
-            if (ticketDate.after(release.getFirstDate()))
+            if (ticketDate.after(release.getFirstDate()) && ticketDate.before(release.getLastDate()))
                 return release;
         }
 

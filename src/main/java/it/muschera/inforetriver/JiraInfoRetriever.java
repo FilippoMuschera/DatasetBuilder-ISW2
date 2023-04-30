@@ -101,6 +101,7 @@ public class JiraInfoRetriever {
                 fileWriter.append(release.getName());
                 fileWriter.append(",");
                 fileWriter.append(release.getFirstDate().toString());
+                fileWriter.append(",");
                 fileWriter.append(release.getLastDate().toString());
                 fileWriter.append("\n");
                 i++;
@@ -191,6 +192,8 @@ public class JiraInfoRetriever {
 
             if(openVersion != null && fixVersion != null) {
                 ticket = new JiraTicket(key, openVersion, fixVersion, affectedVersionsList);
+
+
             }
 
         } catch(JSONException e) {
