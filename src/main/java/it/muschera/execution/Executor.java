@@ -97,12 +97,20 @@ public class Executor {
 
         for (JiraTicket ticket : this.allTickets) {
             if (TicketUtil.isConsistent(ticket)){
-                this.consistentTickets.add(ticket);
+                //setta la IV, e controlla che non ci siano buchi nelle AV (se ci sono li riempe, non scarta il ticket)
+                JiraTicket goodTicket = TicketUtil.makeTicketAccurate(ticket, this.releaseList);
+                this.consistentTickets.add(goodTicket);
             }
         }
 
         //temporary, For debug
         out.println("TOTAL NUMBER OF CONSISTENT TICKET IS " + this.consistentTickets.size());
 
+    }
+
+    public void doProportion(){
+        if (this.consistentTickets.size() >= 5) {
+            Proportion.computeProportionValue(this.consistentTickets);
+        }
     }
 }

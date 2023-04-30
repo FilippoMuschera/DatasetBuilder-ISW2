@@ -1,5 +1,6 @@
 package it.muschera.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class JiraTicket {
@@ -18,6 +19,13 @@ public class JiraTicket {
         this.affectedVersions = av;
     }
 
+    public JiraTicket(String key, Release ov, Release fv) {
+        this.key = key;
+        this.injectedVersion = null;
+        this.openingVersion = ov;
+        this.fixVersion = fv;
+        this.affectedVersions = new ArrayList<>();
+    }
 
 
     public String getKey() {

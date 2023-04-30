@@ -15,6 +15,7 @@ public class Main {
         out.println("Dataset costruito correttamente");
         exec.getTickets();
         exec.getConsistentTickets();
+        exec.doProportion();
         exec.evaluateBuggyness(); //Al momento non fa nulla actually
         out.println("Buggyness delle classi calcolata correttamente");
         exec.writeCsv();
