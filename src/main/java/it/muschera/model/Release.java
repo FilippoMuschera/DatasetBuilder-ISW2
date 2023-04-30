@@ -12,6 +12,8 @@ import java.util.List;
 public class Release {
 
     private final Repository repository;
+
+    private int index;
     private int id;
     private String name;
     private Date lastDate;
@@ -19,7 +21,9 @@ public class Release {
     private ReleaseCommits releaseCommits;
 
 
-    public Release(int id, String name, Date firstDate, Date lastDate, Repository repository) throws GitAPIException, IOException {
+    public Release(int index, int id, String name, Date firstDate, Date lastDate, Repository repository) throws GitAPIException, IOException {
+
+        this.index = index;
         this.id = id;
         this.name = name;
         this.firstDate = firstDate;
@@ -76,6 +80,9 @@ public class Release {
 
     public Repository getRepository() {
         return repository;
+    }
+    public int getIndex() {
+        return index;
     }
 
 }

@@ -8,11 +8,13 @@ import static java.lang.System.*;
 public class Main {
     public static void main(String[] args) {
         BookkeeperEntity b = BookkeeperEntity.getInstance();
+        b.checkInit();
         out.println("Progetto caricato correttamente");
         Executor exec = new Executor("bookkeeper");
         exec.buildDataset();
         out.println("Dataset costruito correttamente");
         exec.getTickets();
+        exec.getConsistentTickets();
         exec.evaluateBuggyness(); //Al momento non fa nulla actually
         out.println("Buggyness delle classi calcolata correttamente");
         exec.writeCsv();

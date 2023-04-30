@@ -62,6 +62,7 @@ public class JiraInfoRetriever {
             //La seconda condizione serve a scartare quella versione, che ha durata di soli 3 giorni e non contiene nessun commit associato
             if (projName.equals("BOOKKEEPER") && !Objects.equals(releaseID.get(releases.get(i)), Integer.toString(12320244))) {
                 releasesList.add(new Release(
+                        i + 1,
                         Integer.parseInt(releaseID.get(releases.get(i))),
                         releaseNames.get(releases.get(i)),
                         firstDate,
@@ -88,7 +89,7 @@ public class JiraInfoRetriever {
         ) {
 
             //Name of CSV for output
-            fileWriter.append("Index,Version ID,Version Name,Date");
+            fileWriter.append("Index,Version ID,Version Name,FirstDate,LastDate");
             fileWriter.append("\n");
             int i = 1;
             for (Release release : releasesList) {
@@ -100,6 +101,7 @@ public class JiraInfoRetriever {
                 fileWriter.append(release.getName());
                 fileWriter.append(",");
                 fileWriter.append(release.getFirstDate().toString());
+                fileWriter.append(release.getLastDate().toString());
                 fileWriter.append("\n");
                 i++;
             }
@@ -145,7 +147,7 @@ public class JiraInfoRetriever {
             total = json.getInt("total");
 
             for (; i < total && i < j; i++) {
-                //Iterate through each issue
+
                 JiraTicket ticket = createTicketInstance(i, issues, releasesList);
                 if(ticket != null) {
                     ticketsList.add(ticket);
@@ -193,11 +195,7 @@ public class JiraInfoRetriever {
 
         } catch(JSONException e) {
             /*
-             * Stiamo cercando i ticket che hanno iv, ov, e fv per poterli usare per fare proportion.
-             * Il primo requisito che devono avere quindi è quello di avere a disposizione tutte e tre queste
-             * informazioni (in seguito controlleremo anche che siano coerenti, e che quindi non ci siano informazioni
-             * oggettivamente errate del tipo fx<ov).
-             * Se una di queste informazioni manca, per il momento scartiamo semplicemente il ticket
+             * Se uno dei ticket non ha i campi che ci servono lo scartiamo perchè non è utilizzabile
              */
 
         }

@@ -50,4 +50,10 @@ public class BookkeeperEntity {
     }
 
 
+    public void checkInit() {
+        if (this.git == null || this.repository == null)
+        {
+            throw new IllegalStateException("Impossibile inizializzare la repository di BookKeeper");
+        }
+    }
 }
