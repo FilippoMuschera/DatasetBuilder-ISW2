@@ -1,6 +1,7 @@
 package it.muschera.inforetriver;
 
 import it.muschera.entities.BookkeeperEntity;
+import it.muschera.entities.OpenJPAEntity;
 import it.muschera.model.JiraTicket;
 import it.muschera.model.Release;
 import it.muschera.util.JSONUtil;
@@ -60,14 +61,24 @@ public class JiraInfoRetriever {
         for (i = 0; i < releases.size(); i++) {
             Date lastDate = formatter.parse(String.valueOf(releases.get(i)));
             //La seconda condizione serve a scartare quella versione, che ha durata di soli 3 giorni e non contiene nessun commit associato
-            if (projName.equals("BOOKKEEPER") && !Objects.equals(releaseID.get(releases.get(i)), Integer.toString(12320244)) || projName.equals("OPENJPA")) {
+            if (projName.equals("BOOKKEEPER") && !Objects.equals(releaseID.get(releases.get(i)), Integer.toString(12320244))) {
                 releasesList.add(new Release(
                         i + 1,
                         Integer.parseInt(releaseID.get(releases.get(i))),
                         releaseNames.get(releases.get(i)),
                         firstDate,
                         lastDate,
-                        BookkeeperEntity.getInstance().getRepository()
+                        BookkeeperEntity.getInstance()
+                ));
+            }
+            else if (projName.equals("OPENJPA")) {
+                releasesList.add(new Release(
+                        i + 1,
+                        Integer.parseInt(releaseID.get(releases.get(i))),
+                        releaseNames.get(releases.get(i)),
+                        firstDate,
+                        lastDate,
+                        OpenJPAEntity.getInstance()
                 ));
             }
             firstDate = lastDate;
@@ -75,7 +86,7 @@ public class JiraInfoRetriever {
         if (Boolean.TRUE.equals(generateCsv))
             this.writeToCsv(releasesList, projName);
 
-        return releasesList;
+        return ReleaseFinder.cleanReleaseList(releasesList);
     }
 
     private void writeToCsv(List<Release> releasesList, String projName) {

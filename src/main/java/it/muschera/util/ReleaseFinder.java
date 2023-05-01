@@ -41,4 +41,10 @@ public class ReleaseFinder {
         }
         return null;
     }
+
+    public static List<Release> cleanReleaseList(List<Release> releasesList) {
+        releasesList.removeIf(r -> r.getReleaseCommits().getLastCommit() == null || r.getReleaseCommits().getJavaClasses() == null);
+
+        return releasesList;
+    }
 }

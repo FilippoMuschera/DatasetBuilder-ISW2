@@ -1,5 +1,6 @@
 package it.muschera.model;
 
+import it.muschera.entities.ProjectInterface;
 import it.muschera.inforetriver.GitInfoRetriever;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
@@ -21,21 +22,21 @@ public class Release {
     private ReleaseCommits releaseCommits;
 
 
-    public Release(int index, int id, String name, Date firstDate, Date lastDate, Repository repository) throws GitAPIException, IOException {
+    public Release(int index, int id, String name, Date firstDate, Date lastDate, ProjectInterface project) throws GitAPIException, IOException {
 
         this.index = index;
         this.id = id;
         this.name = name;
         this.firstDate = firstDate;
         this.lastDate = lastDate;
-        this.repository = repository;
-        this.addCommits();
+        this.repository = project.getRepository();
+        this.addCommits(project);
     }
 
-    private void addCommits() throws GitAPIException, IOException {
+    private void addCommits(ProjectInterface projectInterface) throws GitAPIException, IOException {
         //Data la corrente release, gli associamo tutti i commit che la compongono
         GitInfoRetriever gitInfoRetriever = new GitInfoRetriever(this.repository);
-        List<RevCommit> allCommits = gitInfoRetriever.getAllCommits();
+        List<RevCommit> allCommits = gitInfoRetriever.getAllCommits(projectInterface.getGit(), projectInterface.getRepository());
         this.releaseCommits = gitInfoRetriever.getCommitsOfRelease(allCommits, this);
     }
 

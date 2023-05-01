@@ -20,7 +20,10 @@ public class ReleaseCommits {
     public ReleaseCommits(List<RevCommit> commits, RevCommit lastCommit, Release release) {
         this.commits = commits;
         this.lastCommit = lastCommit;
-        setJavaClasses(lastCommit, release);
+        if ((lastCommit != null))
+            setJavaClasses(lastCommit, release);
+        else
+            this.javaClasses = null;
 
     }
 

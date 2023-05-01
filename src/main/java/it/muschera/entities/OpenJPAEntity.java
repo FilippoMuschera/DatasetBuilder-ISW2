@@ -12,7 +12,7 @@ import java.util.Properties;
 
 import static java.lang.System.*;
 
-public class OpenJPAEntity {
+public class OpenJPAEntity implements ProjectInterface{
 
     private static OpenJPAEntity singletonEntity = null;
 

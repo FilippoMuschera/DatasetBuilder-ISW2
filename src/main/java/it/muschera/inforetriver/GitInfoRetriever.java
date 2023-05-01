@@ -29,13 +29,16 @@ public class GitInfoRetriever {
 
     private static RevCommit getLastCommit(List<RevCommit> commitsList, Release release) {
 
-        RevCommit lastCommit;
-        try {
+        if (commitsList.isEmpty()) {
+            return null;
+        }
+        RevCommit lastCommit = commitsList.get(0);
+        /*try {
             lastCommit = commitsList.get(0);
         } catch (IndexOutOfBoundsException e){
             out.println(release.getId() + " --- " + release.getName());
             return null;
-        }
+        }*/
         for (RevCommit commit : commitsList) {
             //if commitDate > lastCommitDate then refresh lastCommit
             if (commit.getCommitterIdent().getWhen().after(lastCommit.getCommitterIdent().getWhen())) {
@@ -52,9 +55,8 @@ public class GitInfoRetriever {
     //Associa tutti i commit relativi a una release alla release
 
     //Ritorna semplicemente una lista di tutti i commit della repository, analizzando ogni branch
-    public List<RevCommit> getAllCommits() throws GitAPIException, IOException {
-        Git git = BookkeeperEntity.getInstance().getGit();
-        Repository repository = BookkeeperEntity.getInstance().getRepository();
+    public List<RevCommit> getAllCommits(Git git, Repository repository) throws GitAPIException, IOException {
+
         List<RevCommit> allCommits = new ArrayList<>();
         List<Ref> allBranches = git.branchList().setListMode(ListBranchCommand.ListMode.ALL).call();
 

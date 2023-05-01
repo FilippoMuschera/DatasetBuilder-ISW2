@@ -51,6 +51,8 @@ public class Executor {
             e.printStackTrace();
         }
 
+        out.println("Versioni di " + projName + " caricate correttamente");
+
 
         this.javaClassList = new ArrayList<>();
 
@@ -66,6 +68,8 @@ public class Executor {
             }
 
         }
+
+        out.println("JavaClassList creata correttamente");
 
         ComputeFeatures.computeFeatures(this.javaClassList);
 

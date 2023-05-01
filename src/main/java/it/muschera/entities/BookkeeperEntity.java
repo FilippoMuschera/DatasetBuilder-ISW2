@@ -12,7 +12,7 @@ import java.util.Properties;
 
 import static java.lang.System.*;
 
-public class BookkeeperEntity {
+public class BookkeeperEntity implements ProjectInterface{
 
     private static BookkeeperEntity singletonEntity = null;
 
