@@ -1,6 +1,7 @@
 package it.muschera.execution;
 
-import it.muschera.filescreators.CsvEnumType;
+import it.muschera.filescreators.ArffWriter;
+import it.muschera.filescreators.EnumFileType;
 import it.muschera.filescreators.CsvWriter;
 import it.muschera.inforetriver.GitInfoRetriever;
 import it.muschera.inforetriver.JiraInfoRetriever;
@@ -126,8 +127,15 @@ public class Executor {
     }
 
 
-    public void writeCsv() {
-        CsvWriter.writeCsv(projName, CsvEnumType.TESTING, javaClassList);
+    public void writeFiles() {
+        //Al momento la metrica isBuggy è calcolata una volta sola in modo preciso (e non realistico)
+        //TODO implementare training set calcolato realisticamente
+        CsvWriter.writeCsv(projName, EnumFileType.TRAINING, javaClassList);
+        CsvWriter.writeCsv(projName, EnumFileType.TESTING, javaClassList);
+        ArffWriter.writeArff(projName, EnumFileType.TRAINING, javaClassList);
+        ArffWriter.writeArff(projName, EnumFileType.TESTING, javaClassList);
+
+
     }
 
     public void getTickets() {

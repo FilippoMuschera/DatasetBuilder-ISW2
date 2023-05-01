@@ -11,8 +11,8 @@ public class CsvWriter {
 
     private CsvWriter(){}
 
-    public static void writeCsv(String projName, CsvEnumType type, List<JavaClass> javaClassesList){
-        String fileNameType = (type == CsvEnumType.TRAINING) ? "training" : "testing";
+    public static void writeCsv(String projName, EnumFileType type, List<JavaClass> javaClassesList){
+        String fileNameType = (type == EnumFileType.TRAINING) ? "training" : "testing";
         String csvNameStr = projName + "-" + fileNameType;
 
         /*
@@ -29,35 +29,14 @@ public class CsvWriter {
             //Name of CSV for output
             fileWriter.append("JAVA_CLASS,RELEASE,LOC,NR,NAUTH,LOC_ADDED,MAX_LOC_ADDED,AVG_LOC_ADDED,CHURN,MAX_CHURN,AVG_CHURN,IS_BUGGY");
             fileWriter.append("\n");
-            for (JavaClass javaClass : javaClassesList) {
+            for (JavaClass javaClass : ArffWriter.getSplit(javaClassesList, type)) {
 
                 int lastSlashIndex = javaClass.getName().lastIndexOf("/");
                 String name = javaClass.getName().substring(lastSlashIndex + 1);
 
                 fileWriter.append(name);
                 fileWriter.append(",");
-                fileWriter.append(Integer.toString(javaClass.getRelease().getIndex()));
-                fileWriter.append(",");
-                fileWriter.append(Integer.toString(javaClass.getLinesOfCode()));
-                fileWriter.append(",");
-                fileWriter.append(Integer.toString(javaClass.getNr()));
-                fileWriter.append(",");
-                fileWriter.append(Integer.toString(javaClass.getnAuth()));
-                fileWriter.append(",");
-                fileWriter.append(Integer.toString(javaClass.getLocAdded()));
-                fileWriter.append(",");
-                fileWriter.append(Integer.toString(javaClass.getMaxLocAdded()));
-                fileWriter.append(",");
-                fileWriter.append(Double.toString(javaClass.getAvgLocAdded()));
-                fileWriter.append(",");
-                fileWriter.append(Integer.toString(javaClass.getChurn()));
-                fileWriter.append(",");
-                fileWriter.append(Integer.toString(javaClass.getMaxChurn()));
-                fileWriter.append(",");
-                fileWriter.append(Double.toString(javaClass.getAvgChurn()));
-                fileWriter.append(",");
-                fileWriter.append(javaClass.isBuggyString());
-                fileWriter.append("\n");
+                ArffWriter.writeFile(fileWriter, javaClass);
 
 
             }

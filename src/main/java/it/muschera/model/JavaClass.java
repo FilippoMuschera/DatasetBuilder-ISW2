@@ -271,8 +271,8 @@ public class JavaClass {
 
     public String isBuggyString() {
         if (this.isBuggy)
-            return "1";
-        else return "0";
+            return "yes";
+        else return "no";
     }
 }
 

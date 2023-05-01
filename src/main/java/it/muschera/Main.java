@@ -18,7 +18,7 @@ public class Main {
         exec.doProportion();
         exec.evaluateBuggyness();
         out.println("Buggyness delle classi calcolata correttamente");
-        exec.writeCsv();
+        exec.writeFiles();
         out.println("All done");
 
     }

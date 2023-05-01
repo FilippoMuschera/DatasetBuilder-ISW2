@@ -1,6 +1,6 @@
 package it.muschera.filescreators;
 
-public enum CsvEnumType {
+public enum EnumFileType {
 
     TESTING, TRAINING
 

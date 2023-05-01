@@ -21,8 +21,6 @@ public class Proportion {
 
             //P = (FV-IV)/(FV-OV)
             Double p = (fv - iv)/(fv - ov);
-            //For debug purposes
-            System.out.println("p = " + p);
 
             prop.add(p);
 
@@ -34,7 +32,7 @@ public class Proportion {
         finalP = finalP/prop.size();
 
         //debug
-        System.out.println("Final P = " + finalP);
+        System.out.println("Final P = " + finalP + "for " + ticketList.get(0).getKey() + " project");
         return finalP;
 
     }
