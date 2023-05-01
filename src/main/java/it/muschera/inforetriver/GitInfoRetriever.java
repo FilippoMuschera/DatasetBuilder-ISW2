@@ -4,6 +4,7 @@ import it.muschera.entities.BookkeeperEntity;
 import it.muschera.model.JavaClass;
 import it.muschera.model.Release;
 import it.muschera.model.ReleaseCommits;
+import it.muschera.util.JavaClassFinder;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class GitInfoRetriever {
 
@@ -104,22 +106,9 @@ public class GitInfoRetriever {
 
         for (RevCommit commit : javaClass.getRelease().getReleaseCommits().getCommits()) {
 
-            try (DiffFormatter diffFormatter = new DiffFormatter(DisabledOutputStream.INSTANCE);
-                 ObjectReader reader = this.repo.newObjectReader()) {
 
-                CanonicalTreeParser newTreeIter = new CanonicalTreeParser();
-                ObjectId newTree = commit.getTree();
-                newTreeIter.reset(reader, newTree);
 
-                RevCommit commitParent = commit.getParent(0);    //commit precedente a quello attuale del ciclo for
-                CanonicalTreeParser oldTreeIter = new CanonicalTreeParser();
-                ObjectId oldTree = commitParent.getTree();
-                oldTreeIter.reset(reader, oldTree);
-
-                diffFormatter.setRepository(this.repo);
-                List<DiffEntry> entries = diffFormatter.scan(oldTreeIter, newTreeIter); //diff tra i due commit
-
-                for (DiffEntry entry : entries) {
+                for (DiffEntry entry : Objects.requireNonNull(JavaClassFinder.getDiffs(commit, this.repo))) {
                     //Come da specifica, solo .java (scartiamo i test)
                     //controlliamo che il "diff" sia per una modifica e non un add/rename/delete ecc...
                     //controlliamo che la classe modificata sia uguale a quella che ci viene passata come parametro
@@ -130,9 +119,7 @@ public class GitInfoRetriever {
 
                 }
 
-            } catch (ArrayIndexOutOfBoundsException | IOException e) {
-                //se il commit non ne ha uno precedente lo salto
-            }
+
         }
 
         javaClass.setCommitsInvolved(commitsThatModifiedClass);

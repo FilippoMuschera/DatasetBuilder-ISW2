@@ -1,6 +1,7 @@
 package it.muschera.util;
 
 import it.muschera.model.Release;
+import org.eclipse.jgit.revwalk.RevCommit;
 
 import java.util.Date;
 import java.util.List;
@@ -28,4 +29,12 @@ public class ReleaseFinder {
         return null;
     }
 
+    public static Release findByCommit(RevCommit commit, List<Release> releaseList) {
+        for (Release rel : releaseList) {
+            if (rel.getReleaseCommits().getCommits().contains(commit)){
+                return rel;
+            }
+        }
+        return null;
+    }
 }

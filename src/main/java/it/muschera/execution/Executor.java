@@ -8,8 +8,11 @@ import it.muschera.model.JavaClass;
 import it.muschera.model.JiraTicket;
 import it.muschera.model.Release;
 import it.muschera.model.ReleaseCommits;
+import it.muschera.util.JavaClassFinder;
+import it.muschera.util.ReleaseFinder;
 import it.muschera.util.TicketUtil;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.revwalk.RevCommit;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -27,8 +30,10 @@ public class Executor {
     private List<Release> releaseList;
     private List<JavaClass> javaClassList;
     private List<JiraTicket> allTickets;
-
     private List<JiraTicket> consistentTickets;
+    private List<JiraTicket> fixedTickets;
+
+    private double p;
 
 
 
@@ -68,7 +73,56 @@ public class Executor {
     }
 
     public void evaluateBuggyness(){
-        //TODO
+        /*
+         * Questo metodo (e i metodi che chiama) hanno l'obiettivo di calcolare, per ogni classe java già costruita, presente in
+         * javaClassList, l'attributo "isBuggy", per vedere se quella classe, a quella release, era buggy oppure no.
+         *
+         *Per farlo dobbiamo prendere la lista di tutti i ticket (anche quelli senza AV), e inserire manualmente le AV e la IV, usando
+         * il metodo di Proportion, dove P è già stato calcolato usando i ticket che avevano a disposizione la OV, la FV e le AV.
+         *
+         * Una volta resi tutti i ticket utilizzabili, iteriamo su di essi, per andare ad analizzare a quali commit si riferiscono,
+         * e quali classi sono state toccate da quei commit, andando poi ad aggiornare la loro buggyness.
+         */
+
+        //Qui sappiamo che P è stato già inizializzato, perché questa funzione nel flusso di esecuzione è chiamata dopo "doProportion"
+
+        List<JiraTicket> brokenTickets = this.allTickets;
+        this.fixedTickets = new ArrayList<>();
+        this.fixedTickets.addAll(this.consistentTickets); //Questi ticket sono già consistent, li aggiungo subito
+        brokenTickets.removeAll(this.consistentTickets); //Qui ho solo i ticket da "aggiustare"
+
+        for (JiraTicket brokenTicket : brokenTickets) {
+            JiraTicket fixedTicket = TicketUtil.repairTicketWithProportion(brokenTicket, this.p, this.releaseList);
+            this.fixedTickets.add(fixedTicket);
+        }
+
+        /*
+         * Ora che ho la lista "riparata" di tutti i ticket, itero su di essi. L'idea è quella, per ogni ticket, di vedere
+         * i commit a lui associati, vedere quali classi vanno a toccare,e marcare le classi modificate come buggy per tutte
+         * le Release comprese tra la IV e la FV
+         */
+
+        for (JiraTicket ticket : this.fixedTickets) {
+            List<RevCommit> associatedCommits = TicketUtil.getCommitsOfTicket(ticket, this.releaseList);
+
+            for (RevCommit commit : associatedCommits) {
+
+                Release release = ReleaseFinder.findByCommit(commit, this.releaseList);
+
+                List<String> classesTouchedByCommit = JavaClassFinder.getModifiedClasses(commit, release.getRepository());
+
+                for (String className : classesTouchedByCommit) {
+
+                    JavaClassFinder.markAsBuggy(this.javaClassList, className, ticket, release);
+
+                }
+
+
+            }
+
+        }
+
+
     }
 
 
@@ -110,7 +164,7 @@ public class Executor {
 
     public void doProportion(){
         if (this.consistentTickets.size() >= 5) {
-            Proportion.computeProportionValue(this.consistentTickets);
+            this.p = Proportion.computeProportionValue(this.consistentTickets);
         }
     }
 }

@@ -26,6 +26,7 @@ public class JavaClass {
     private String name;
     private String content;
     private Release release;
+    private boolean isBuggy;
     private List<RevCommit> commitsInvolved = new ArrayList<>();
 
     private List<Integer> addedLinesList = new ArrayList<>();
@@ -258,6 +259,14 @@ public class JavaClass {
 
     public void setDeletedLinesList(List<Integer> deletedLinesList) {
         this.deletedLinesList = deletedLinesList;
+    }
+
+    public boolean isBuggy() {
+        return isBuggy;
+    }
+
+    public void setBuggy(boolean buggy) {
+        isBuggy = buggy;
     }
 
 }
