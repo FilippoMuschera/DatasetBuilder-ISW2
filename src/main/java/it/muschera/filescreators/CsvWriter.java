@@ -36,7 +36,7 @@ public class CsvWriter {
 
                 fileWriter.append(name);
                 fileWriter.append(",");
-                fileWriter.append(Integer.toString(javaClass.getRelease().getId()));
+                fileWriter.append(Integer.toString(javaClass.getRelease().getIndex()));
                 fileWriter.append(",");
                 fileWriter.append(Integer.toString(javaClass.getLinesOfCode()));
                 fileWriter.append(",");
@@ -56,7 +56,7 @@ public class CsvWriter {
                 fileWriter.append(",");
                 fileWriter.append(Double.toString(javaClass.getAvgChurn()));
                 fileWriter.append(",");
-                fileWriter.append("?"); //TODO
+                fileWriter.append(javaClass.isBuggyString());
                 fileWriter.append("\n");
 
 

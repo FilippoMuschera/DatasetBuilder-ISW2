@@ -79,8 +79,11 @@ public class JavaClassFinder {
 
         //cerco la classe modificata tra la mia lista di classi
         for (JavaClass javaClass : javaClassList) {
-            if (javaClass.getName().equals(modifiedClass)) {
-                //TODO FINIRE
+            //Trovata la classe, se è quella corrispondente a una versione iv <= versioneClasse < fv => la marco come buggy
+            if (javaClass.getName().equals(modifiedClass) && (javaClass.getRelease().getIndex() >= ticket.getInjectedVersion().getIndex() && javaClass.getRelease().getIndex() < ticket.getFixVersion().getIndex())) {
+
+                    javaClass.setBuggy(true);
+
             }
         }
 

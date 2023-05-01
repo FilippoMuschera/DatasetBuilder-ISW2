@@ -127,7 +127,7 @@ public class Executor {
 
 
     public void writeCsv() {
-        CsvWriter.writeCsv(projName, CsvEnumType.TRAINING, javaClassList);
+        CsvWriter.writeCsv(projName, CsvEnumType.TESTING, javaClassList);
     }
 
     public void getTickets() {

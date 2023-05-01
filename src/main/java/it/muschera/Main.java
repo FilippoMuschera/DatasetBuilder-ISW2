@@ -16,7 +16,7 @@ public class Main {
         exec.getTickets();
         exec.getConsistentTickets();
         exec.doProportion();
-        exec.evaluateBuggyness(); //Al momento non fa nulla actually
+        exec.evaluateBuggyness();
         out.println("Buggyness delle classi calcolata correttamente");
         exec.writeCsv();
         out.println("All done");

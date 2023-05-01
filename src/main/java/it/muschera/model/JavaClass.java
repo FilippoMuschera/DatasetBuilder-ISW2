@@ -269,5 +269,10 @@ public class JavaClass {
         isBuggy = buggy;
     }
 
+    public String isBuggyString() {
+        if (this.isBuggy)
+            return "1";
+        else return "0";
+    }
 }
 
