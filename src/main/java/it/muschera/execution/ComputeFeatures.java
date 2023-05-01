@@ -1,7 +1,6 @@
 package it.muschera.execution;
 
 import it.muschera.model.JavaClass;
-import it.muschera.model.Release;
 import org.eclipse.jgit.revwalk.RevCommit;
 
 import java.text.DecimalFormat;

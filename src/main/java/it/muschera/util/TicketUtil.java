@@ -9,6 +9,10 @@ import java.util.List;
 
 public class TicketUtil {
 
+    private TicketUtil() {
+        //solo metodi statici
+    }
+
     public static boolean isConsistent(JiraTicket ticket) {
 
         boolean isConsistent = false;

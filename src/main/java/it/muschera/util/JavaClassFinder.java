@@ -2,10 +2,8 @@ package it.muschera.util;
 
 import it.muschera.model.JavaClass;
 import it.muschera.model.JiraTicket;
-import it.muschera.model.Release;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
-import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Repository;
@@ -75,7 +73,7 @@ public class JavaClassFinder {
         return Collections.emptyList();
     }
 
-    public static void markAsBuggy(List<JavaClass> javaClassList, String modifiedClass, JiraTicket ticket, Release release) {
+    public static void markAsBuggy(List<JavaClass> javaClassList, String modifiedClass, JiraTicket ticket) {
 
         //cerco la classe modificata tra la mia lista di classi
         for (JavaClass javaClass : javaClassList) {

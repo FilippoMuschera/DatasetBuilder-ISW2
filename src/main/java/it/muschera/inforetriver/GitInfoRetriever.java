@@ -9,20 +9,17 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
-import org.eclipse.jgit.diff.DiffFormatter;
-import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.treewalk.CanonicalTreeParser;
-import org.eclipse.jgit.util.io.DisabledOutputStream;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+
+import static java.lang.System.*;
 
 public class GitInfoRetriever {
 
@@ -36,7 +33,7 @@ public class GitInfoRetriever {
         try {
             lastCommit = commitsList.get(0);
         } catch (IndexOutOfBoundsException e){
-            System.out.println(release.getId() + " --- " + release.getName());
+            out.println(release.getId() + " --- " + release.getName());
             return null;
         }
         for (RevCommit commit : commitsList) {
@@ -57,12 +54,12 @@ public class GitInfoRetriever {
     //Ritorna semplicemente una lista di tutti i commit della repository, analizzando ogni branch
     public List<RevCommit> getAllCommits() throws GitAPIException, IOException {
         Git git = BookkeeperEntity.getInstance().getGit();
-        Repository repo = BookkeeperEntity.getInstance().getRepository();
+        Repository repository = BookkeeperEntity.getInstance().getRepository();
         List<RevCommit> allCommits = new ArrayList<>();
         List<Ref> allBranches = git.branchList().setListMode(ListBranchCommand.ListMode.ALL).call();
 
         for (Ref branch : allBranches) {
-            Iterable<RevCommit> commitsList = git.log().add(repo.resolve(branch.getName())).call();
+            Iterable<RevCommit> commitsList = git.log().add(repository.resolve(branch.getName())).call();
             for (RevCommit commit : commitsList) {
 
                 if (!allCommits.contains(commit)) {
@@ -76,7 +73,7 @@ public class GitInfoRetriever {
         return allCommits;
     }
 
-    public ReleaseCommits getCommitsOfRelease(List<RevCommit> commitsList, Release release) throws IOException {
+    public ReleaseCommits getCommitsOfRelease(List<RevCommit> commitsList, Release release) {
 
         List<RevCommit> matchingCommits = new ArrayList<>();
         Date lastDate = release.getLastDate();

@@ -60,7 +60,7 @@ public class JiraInfoRetriever {
         for (i = 0; i < releases.size(); i++) {
             Date lastDate = formatter.parse(String.valueOf(releases.get(i)));
             //La seconda condizione serve a scartare quella versione, che ha durata di soli 3 giorni e non contiene nessun commit associato
-            if (projName.equals("BOOKKEEPER") && !Objects.equals(releaseID.get(releases.get(i)), Integer.toString(12320244))) {
+            if (projName.equals("BOOKKEEPER") && !Objects.equals(releaseID.get(releases.get(i)), Integer.toString(12320244)) || projName.equals("OPENJPA")) {
                 releasesList.add(new Release(
                         i + 1,
                         Integer.parseInt(releaseID.get(releases.get(i))),
@@ -69,8 +69,6 @@ public class JiraInfoRetriever {
                         lastDate,
                         BookkeeperEntity.getInstance().getRepository()
                 ));
-            } else {
-                //TODO OPENJPA
             }
             firstDate = lastDate;
         }

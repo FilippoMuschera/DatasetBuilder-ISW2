@@ -21,8 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static java.lang.System.err;
-import static java.lang.System.out;
+import static java.lang.System.*;
 
 public class Executor {
 
@@ -114,7 +113,7 @@ public class Executor {
 
                 for (String className : classesTouchedByCommit) {
 
-                    JavaClassFinder.markAsBuggy(this.javaClassList, className, ticket, release);
+                    JavaClassFinder.markAsBuggy(this.javaClassList, className, ticket);
 
                 }
 

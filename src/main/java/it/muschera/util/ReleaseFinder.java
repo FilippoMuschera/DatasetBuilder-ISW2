@@ -8,6 +8,10 @@ import java.util.List;
 
 public class ReleaseFinder {
 
+    private ReleaseFinder() {
+        //solo metodi statici
+    }
+
     public static Release findByName(String releaseName, List<Release> releaseList){
 
         for (Release release : releaseList){
