@@ -25,7 +25,7 @@ public class TicketUtil {
         if (ticket.getOpeningVersion().getIndex() > ticket.getFixVersion().getIndex()) //ticket banalmente errato
             return false;
 
-        for (Release affectedVersion : ticket.getAffectedVersions()) {
+        for (Release affectedVersion : ticket.getAffectedVersions()) { //AV = 2,3,4,5
             if (affectedVersion.getIndex() >= ticket.getFixVersion().getIndex()){
                 //Se la fix version risulta anche affected, il ticket non è consistente (Deve essere sempre AV < FV)
                 //Altrimenti, se la fix version è anche affected, non è realmente "fixed".
@@ -122,5 +122,13 @@ public class TicketUtil {
         }
 
         return commitsOfTicket;
+    }
+
+    public static boolean isBrokenButConsistent(JiraTicket brokenTicket) {
+        if (brokenTicket.getOpeningVersion().getIndex() > brokenTicket.getFixVersion().getIndex()) //ticket banalmente errato
+            return false;
+        if (brokenTicket.getOpeningVersion().getIndex() == brokenTicket.getFixVersion().getIndex())
+            return false;
+        return true;
     }
 }

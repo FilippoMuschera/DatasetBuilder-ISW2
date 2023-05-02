@@ -14,6 +14,8 @@ public class Release {
 
     private final Repository repository;
 
+
+
     private int index;
     private int id;
     private String name;
@@ -84,6 +86,10 @@ public class Release {
     }
     public int getIndex() {
         return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
 }

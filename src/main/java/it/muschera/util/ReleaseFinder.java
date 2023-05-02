@@ -3,6 +3,7 @@ package it.muschera.util;
 import it.muschera.model.Release;
 import org.eclipse.jgit.revwalk.RevCommit;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -46,5 +47,19 @@ public class ReleaseFinder {
         releasesList.removeIf(r -> r.getReleaseCommits().getLastCommit() == null || r.getReleaseCommits().getJavaClasses() == null);
 
         return releasesList;
+    }
+
+    /*
+     * Serve per avere i numeri di release tutti consecutivi
+     */
+    public static List<Release> refactorReleaseList(List<Release> releaseList) {
+        int i = 1;
+        List<Release> adjustedReleaseList = new ArrayList<>();
+        for (Release release : releaseList) {
+            release.setIndex(i);
+            adjustedReleaseList.add(release);
+        }
+
+        return adjustedReleaseList;
     }
 }

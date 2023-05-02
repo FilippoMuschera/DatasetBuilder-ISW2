@@ -46,6 +46,7 @@ public class Executor {
         this.jiraInfoRetriever = new JiraInfoRetriever();
         try {
             this.releaseList = jiraInfoRetriever.getJiraVersions(this.projName.toUpperCase(), true);
+            this.releaseList = ReleaseFinder.refactorReleaseList(this.releaseList);
         } catch (IOException | ParseException | GitAPIException e) {
             err.println("Errore nella lettura delle versioni da Jira");
             e.printStackTrace();
@@ -96,8 +97,11 @@ public class Executor {
         brokenTickets.removeAll(this.consistentTickets); //Qui ho solo i ticket da "aggiustare"
 
         for (JiraTicket brokenTicket : brokenTickets) {
-            JiraTicket fixedTicket = TicketUtil.repairTicketWithProportion(brokenTicket, this.p, this.releaseList);
-            this.fixedTickets.add(fixedTicket);
+
+            if (TicketUtil.isBrokenButConsistent(brokenTicket)) {
+                JiraTicket fixedTicket = TicketUtil.repairTicketWithProportion(brokenTicket, this.p, this.releaseList);
+                this.fixedTickets.add(fixedTicket);
+            }
         }
 
         /*
