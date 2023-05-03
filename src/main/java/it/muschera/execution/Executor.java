@@ -147,11 +147,18 @@ public class Executor {
 
     public void getTickets() {
 
-        try {
+        try { //debug
+            if (this.jiraInfoRetriever == null){ //debug
+                this.jiraInfoRetriever = new JiraInfoRetriever(); //debug
+                this.releaseList = jiraInfoRetriever.getJiraVersions(this.projName.toUpperCase(), false);//debug
+            } //debug
             this.allTickets = this.jiraInfoRetriever.getAllJiraTickets(this.releaseList, this.projName);
         } catch (IOException | ParseException e) {
             err.println("Errore nella raccolta dei Ticket di jira per " + this.projName);
             e.printStackTrace();
+        } catch (GitAPIException e) {
+            err.println("Errore ma questo tanto è debug");
+            throw new RuntimeException(e);
         }
 
         //temporary, for debug
@@ -165,6 +172,7 @@ public class Executor {
         this.consistentTickets = new ArrayList<>();
 
         for (JiraTicket ticket : this.allTickets) {
+
             if (TicketUtil.isConsistent(ticket)){
                 //setta la IV, e controlla che non ci siano buchi nelle AV (se ci sono li riempe, non scarta il ticket)
                 JiraTicket goodTicket = TicketUtil.makeTicketAccurate(ticket, this.releaseList);

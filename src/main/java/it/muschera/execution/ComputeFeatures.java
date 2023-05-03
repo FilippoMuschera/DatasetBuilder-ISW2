@@ -1,11 +1,17 @@
 package it.muschera.execution;
 
+import com.github.javaparser.ParseResult;
 import it.muschera.model.JavaClass;
 import org.eclipse.jgit.revwalk.RevCommit;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.stmt.TryStmt;
 
 public class ComputeFeatures {
 
@@ -18,8 +24,29 @@ public class ComputeFeatures {
             ComputeFeatures.computeNR(javaClass);
             ComputeFeatures.computeNAuth(javaClass);
             ComputeFeatures.computeChurnAndLocTouched(javaClass);
+            ComputeFeatures.computeHandledExceptions(javaClass);
         }
 
+
+    }
+
+    private static void computeHandledExceptions(JavaClass javaClass) {
+
+        JavaParser jp = new JavaParser();
+        ParseResult<CompilationUnit> parseResult = jp.parse(javaClass.getContent());
+
+
+        int numHandledExceptions = 0;
+
+        if (parseResult.getResult().isPresent()) {
+            for (MethodDeclaration method : parseResult.getResult().get().findAll(MethodDeclaration.class)) {
+                for (TryStmt tryStmt : method.findAll(TryStmt.class)) {
+                    numHandledExceptions += tryStmt.getCatchClauses().size();
+                }
+            }
+        }
+
+        javaClass.setHandledExceptions(numHandledExceptions);
 
     }
 

@@ -25,7 +25,7 @@ public class TicketUtil {
         if (ticket.getOpeningVersion().getIndex() > ticket.getFixVersion().getIndex()) //ticket banalmente errato
             return false;
 
-        for (Release affectedVersion : ticket.getAffectedVersions()) { //AV = 2,3,4,5
+        for (Release affectedVersion : ticket.getAffectedVersions()) {
             if (affectedVersion.getIndex() >= ticket.getFixVersion().getIndex()){
                 //Se la fix version risulta anche affected, il ticket non è consistente (Deve essere sempre AV < FV)
                 //Altrimenti, se la fix version è anche affected, non è realmente "fixed".
@@ -71,7 +71,7 @@ public class TicketUtil {
         List<Release> affectedVersions = new ArrayList<>();
         int ov = brokenTicket.getOpeningVersion().getIndex();
         int fv = brokenTicket.getFixVersion().getIndex();
-        int iv = (int) (fv - (fv - ov) * p); //TODO ARROTONDARE?
+        int iv = (int) (fv - (fv - ov) * p); //TODO ARROTONDARE PER ECCESSO?
 
         iv = Math.max(1, iv); //Se con proportion la IV viene <1 la impostiamo a 1 per ovvi motivi
 
@@ -83,12 +83,7 @@ public class TicketUtil {
         }
 
         brokenTicket.setAffectedVersions(affectedVersions);
-        /* Attualmente con openjpa qui da qualche problema, perchè a quanto pare alcuni ticket si ritorvano con
-        * una affectedVersion list vuota (potrebbe essere un edge case in cui l'unica affacted version che ci sarebbe
-        * è una di quelle che scartiamo perchè non ci sono commit associati).
-        * Dovrebbe essere sufficiente scartare questi ticket perchè alla fine è come se avessere IV = FV */
-        //TODO OPENJPA-2896 HA OV=FV=36=3.2.1 COME HA FATTO AD ARRIVARE FINO QUI LOL
-        //SUI BROKEN TICKET NON è PRESENTE UN CONTROLLO DI CONSISTENZE, ECCO IL PROBLEMA
+
 
         return TicketUtil.makeTicketAccurate(brokenTicket, releaseList);
 
@@ -127,8 +122,6 @@ public class TicketUtil {
     public static boolean isBrokenButConsistent(JiraTicket brokenTicket) {
         if (brokenTicket.getOpeningVersion().getIndex() > brokenTicket.getFixVersion().getIndex()) //ticket banalmente errato
             return false;
-        if (brokenTicket.getOpeningVersion().getIndex() == brokenTicket.getFixVersion().getIndex())
-            return false;
-        return true;
+        return brokenTicket.getOpeningVersion().getIndex() != brokenTicket.getFixVersion().getIndex();
     }
 }

@@ -42,6 +42,7 @@ public class ArffWriter {
             fileWriter.write("@attribute CHURN numeric\n");
             fileWriter.write("@attribute MAX_CHURN numeric\n");
             fileWriter.write("@attribute AVG_CHURN numeric\n");
+            fileWriter.write("@attribute HND_EXCEPT numeric\n");
             fileWriter.write("@attribute IS_BUGGY {'yes', 'no'}\n");
             fileWriter.write("@data\n");
             for (JavaClass javaClass : ArffWriter.getSplit(javaClassesList, type)) {
@@ -79,6 +80,8 @@ public class ArffWriter {
         fileWriter.append(Integer.toString(javaClass.getMaxChurn()));
         fileWriter.append(",");
         fileWriter.append(Double.toString(javaClass.getAvgChurn()));
+        fileWriter.append(",");
+        fileWriter.append(Integer.toString(javaClass.getHandledExceptions()));
         fileWriter.append(",");
         fileWriter.append(javaClass.isBuggyString());
         fileWriter.append("\n");

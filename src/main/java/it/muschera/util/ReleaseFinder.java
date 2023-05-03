@@ -58,6 +58,7 @@ public class ReleaseFinder {
         for (Release release : releaseList) {
             release.setIndex(i);
             adjustedReleaseList.add(release);
+            i++;
         }
 
         return adjustedReleaseList;

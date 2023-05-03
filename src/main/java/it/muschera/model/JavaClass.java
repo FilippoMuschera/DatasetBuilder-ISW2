@@ -19,7 +19,7 @@ public class JavaClass {
      * al suo contenuto e alla release a cui appartiene, avrà un attributo per ogni metrica che viene calcolata su di
      * essa (es. LOC, NAuth, ecc...).
      * L'idea è quella di avere un istanza di questo tipo per ogni classe di ogni release del progetto da analizzare,
-     * calcolarne tutte le fetures, e poi "trasporre" ognuna di queste istanze in una riga del file .csv/.arff da usare
+     * calcolarne tutte le features, e poi "trasporre" ognuna di queste istanze in una riga del file .csv/.arff da usare
      * poi su WEKA
      */
 
@@ -43,6 +43,7 @@ public class JavaClass {
     private int churn = 0; //misura di quante LOC il codice è cambiato rispetto alla release precedente, controllando ogni commit della release
     private int maxChurn = 0; //valore massimo di churn che si incontra all'interno della release
     private double avgChurn = 0.0; //churn medio all'intero della release
+    private int handledExceptions = 0;
 
 
     public JavaClass(String name, String content, Release release) {
@@ -273,6 +274,14 @@ public class JavaClass {
         if (this.isBuggy)
             return "yes";
         else return "no";
+    }
+
+    public int getHandledExceptions() {
+        return handledExceptions;
+    }
+
+    public void setHandledExceptions(int handledExceptions) {
+        this.handledExceptions = handledExceptions;
     }
 }
 
