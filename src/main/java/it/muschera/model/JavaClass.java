@@ -43,7 +43,8 @@ public class JavaClass {
     private int churn = 0; //misura di quante LOC il codice è cambiato rispetto alla release precedente, controllando ogni commit della release
     private int maxChurn = 0; //valore massimo di churn che si incontra all'interno della release
     private double avgChurn = 0.0; //churn medio all'intero della release
-    private int handledExceptions = 0;
+    private int handledExceptions = 0; //numero di eccezioni che la classe si trova a dover gestire all'interno del suo codie
+    private int age = 0; //age (numero di versioni da cui esiste la classe) pesata sul LocTouched
 
 
     public JavaClass(String name, String content, Release release) {
@@ -282,6 +283,14 @@ public class JavaClass {
 
     public void setHandledExceptions(int handledExceptions) {
         this.handledExceptions = handledExceptions;
+    }
+
+    public int getAge() {
+        return this.age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 }
 

@@ -63,4 +63,13 @@ public class ReleaseFinder {
 
         return adjustedReleaseList;
     }
+
+    public static Release findByIndex(int relIndex, List<Release> releaseList) {
+        for (Release release : releaseList){
+            if (release.getIndex() == relIndex)
+                return  release;
+        }
+
+        return null;
+    }
 }

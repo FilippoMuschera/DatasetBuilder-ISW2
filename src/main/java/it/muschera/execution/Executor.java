@@ -72,7 +72,7 @@ public class Executor {
 
         out.println("JavaClassList creata correttamente");
 
-        ComputeFeatures.computeFeatures(this.javaClassList);
+        ComputeFeatures.computeFeatures(this.javaClassList, this.releaseList);
 
 
     }

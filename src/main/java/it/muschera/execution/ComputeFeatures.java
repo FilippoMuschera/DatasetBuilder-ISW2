@@ -2,6 +2,8 @@ package it.muschera.execution;
 
 import com.github.javaparser.ParseResult;
 import it.muschera.model.JavaClass;
+import it.muschera.model.Release;
+import it.muschera.util.ReleaseFinder;
 import org.eclipse.jgit.revwalk.RevCommit;
 
 import java.text.DecimalFormat;
@@ -17,7 +19,7 @@ public class ComputeFeatures {
 
     private ComputeFeatures() {} //solo metodi statici
 
-    public static void computeFeatures(List<JavaClass> javaClassList) {
+    public static void computeFeatures(List<JavaClass> javaClassList, List<Release> releaseList) {
 
         for (JavaClass javaClass : javaClassList){
             ComputeFeatures.computeLOC(javaClass);
@@ -25,9 +27,39 @@ public class ComputeFeatures {
             ComputeFeatures.computeNAuth(javaClass);
             ComputeFeatures.computeChurnAndLocTouched(javaClass);
             ComputeFeatures.computeHandledExceptions(javaClass);
+            ComputeFeatures.computeAge(javaClass, releaseList);
         }
 
 
+    }
+
+    private static void computeAge(JavaClass javaClass, List<Release> releaseList) {
+        int age = 1;
+        Release currentRelease = javaClass.getRelease();
+        boolean keepGoing = true;
+
+        do {
+            if (currentRelease.getIndex() == 1)
+            {
+                javaClass.setAge(age);
+                keepGoing = false;
+
+            }
+
+            else {
+
+                currentRelease = (ReleaseFinder.findByIndex(currentRelease.getIndex() - 1, releaseList));
+                assert currentRelease != null;
+                if (currentRelease.getReleaseCommits().getJavaClasses().containsKey(javaClass.getName())) {
+                    age++;
+
+                }
+                else {
+                    javaClass.setAge(age);
+                    keepGoing = false;
+                }
+            }
+        } while (keepGoing);
     }
 
     private static void computeHandledExceptions(JavaClass javaClass) {
