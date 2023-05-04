@@ -1,6 +1,5 @@
 package it.muschera.inforetriver;
 
-import it.muschera.entities.BookkeeperEntity;
 import it.muschera.model.JavaClass;
 import it.muschera.model.Release;
 import it.muschera.model.ReleaseCommits;
@@ -19,26 +18,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import static java.lang.System.*;
-
 public class GitInfoRetriever {
 
     private final Repository repo;
 
     public GitInfoRetriever(Repository repository) {this.repo = repository;}
 
-    private static RevCommit getLastCommit(List<RevCommit> commitsList, Release release) {
+    private static RevCommit getLastCommit(List<RevCommit> commitsList) {
 
         if (commitsList.isEmpty()) {
             return null;
         }
         RevCommit lastCommit = commitsList.get(0);
-        /*try {
-            lastCommit = commitsList.get(0);
-        } catch (IndexOutOfBoundsException e){
-            out.println(release.getId() + " --- " + release.getName());
-            return null;
-        }*/
+
         for (RevCommit commit : commitsList) {
             //if commitDate > lastCommitDate then refresh lastCommit
             if (commit.getCommitterIdent().getWhen().after(lastCommit.getCommitterIdent().getWhen())) {
@@ -91,7 +83,7 @@ public class GitInfoRetriever {
             }
 
         }
-        RevCommit lastCommit = getLastCommit(matchingCommits, release);
+        RevCommit lastCommit = getLastCommit(matchingCommits);
 
         return new ReleaseCommits(matchingCommits, lastCommit, release);
 

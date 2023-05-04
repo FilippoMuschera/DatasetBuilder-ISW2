@@ -31,8 +31,6 @@ public class Proportion {
             finalP += p;
         finalP = finalP/prop.size();
 
-        //debug
-        System.out.println("Final P = " + finalP + "for " + ticketList.get(0).getKey() + " project");
         return finalP;
 
     }

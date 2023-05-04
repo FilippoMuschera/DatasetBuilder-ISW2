@@ -44,6 +44,7 @@ public class ArffWriter {
             fileWriter.write("@attribute AVG_CHURN numeric\n");
             fileWriter.write("@attribute HND_EXCEPT numeric\n");
             fileWriter.write("@attribute AGE numeric\n");
+            fileWriter.write("@attribute CYCL_COMPLEX numeric\n");
             fileWriter.write("@attribute IS_BUGGY {'yes', 'no'}\n");
             fileWriter.write("@data\n");
             for (JavaClass javaClass : ArffWriter.getSplit(javaClassesList, type)) {
@@ -85,6 +86,8 @@ public class ArffWriter {
         fileWriter.append(Integer.toString(javaClass.getHandledExceptions()));
         fileWriter.append(",");
         fileWriter.append(Integer.toString(javaClass.getAge()));
+        fileWriter.append(",");
+        fileWriter.append(Integer.toString(javaClass.getCyclComplexity()));
         fileWriter.append(",");
         fileWriter.append(javaClass.isBuggyString());
         fileWriter.append("\n");

@@ -9,23 +9,11 @@ import static java.lang.System.*;
 public class Main {
     public static void main(String[] args) {
         execProject("bookkeeper");
-        //execProject("openjpa");
-
-        //mockMain("bookkeeper");
-
+        execProject("openjpa");
 
 
     }
 
-    //for debugging
-    private static void mockMain(String projName) {
-        BookkeeperEntity jpa = BookkeeperEntity.getInstance();
-        jpa.checkInit();
-        Executor exec = new Executor(projName);
-        exec.getTickets();
-        exec.getConsistentTickets();
-        exec.doProportion();
-    }
 
     private static void execProject(String projName) {
         if (projName.equals("bookkeeper")) {

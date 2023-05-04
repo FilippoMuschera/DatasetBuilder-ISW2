@@ -71,7 +71,7 @@ public class TicketUtil {
         List<Release> affectedVersions = new ArrayList<>();
         int ov = brokenTicket.getOpeningVersion().getIndex();
         int fv = brokenTicket.getFixVersion().getIndex();
-        int iv = (int) (fv - (fv - ov) * p); //TODO ARROTONDARE PER ECCESSO?
+        int iv = (int) (fv - (fv - ov) * p); //TO.DO ARROTONDARE PER ECCESSO?
 
         iv = Math.max(1, iv); //Se con proportion la IV viene <1 la impostiamo a 1 per ovvi motivi
 

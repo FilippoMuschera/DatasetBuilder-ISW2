@@ -27,7 +27,7 @@ public class CsvWriter {
         ) {
 
             //Name of CSV for output
-            fileWriter.append("JAVA_CLASS,RELEASE,LOC,NR,NAUTH,LOC_ADDED,MAX_LOC_ADDED,AVG_LOC_ADDED,CHURN,MAX_CHURN,AVG_CHURN,HND_EXCEPT,AGE,IS_BUGGY");
+            fileWriter.append("JAVA_CLASS,RELEASE,LOC,NR,NAUTH,LOC_ADDED,MAX_LOC_ADDED,AVG_LOC_ADDED,CHURN,MAX_CHURN,AVG_CHURN,HND_EXCEPT,AGE,CYCL_COMPLEX,IS_BUGGY");
             fileWriter.append("\n");
             for (JavaClass javaClass : ArffWriter.getSplit(javaClassesList, type)) {
 

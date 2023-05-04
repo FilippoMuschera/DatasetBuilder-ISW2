@@ -31,7 +31,7 @@ public class Executor {
     private List<JavaClass> javaClassList;
     private List<JiraTicket> allTickets;
     private List<JiraTicket> consistentTickets;
-    private List<JiraTicket> fixedTickets;
+
 
     private double p;
 
@@ -78,6 +78,7 @@ public class Executor {
     }
 
     public void evaluateBuggyness(){
+        List<JiraTicket> fixedTickets;
         /*
          * Questo metodo (e i metodi che chiama) hanno l'obiettivo di calcolare, per ogni classe java già costruita, presente in
          * javaClassList, l'attributo "isBuggy", per vedere se quella classe, a quella release, era buggy oppure no.
@@ -92,15 +93,15 @@ public class Executor {
         //Qui sappiamo che P è stato già inizializzato, perché questa funzione nel flusso di esecuzione è chiamata dopo "doProportion"
 
         List<JiraTicket> brokenTickets = this.allTickets;
-        this.fixedTickets = new ArrayList<>();
-        this.fixedTickets.addAll(this.consistentTickets); //Questi ticket sono già consistent, li aggiungo subito
+        fixedTickets = new ArrayList<>();
+        fixedTickets.addAll(this.consistentTickets); //Questi ticket sono già consistent, li aggiungo subito
         brokenTickets.removeAll(this.consistentTickets); //Qui ho solo i ticket da "aggiustare"
 
         for (JiraTicket brokenTicket : brokenTickets) {
 
             if (TicketUtil.isBrokenButConsistent(brokenTicket)) {
                 JiraTicket fixedTicket = TicketUtil.repairTicketWithProportion(brokenTicket, this.p, this.releaseList);
-                this.fixedTickets.add(fixedTicket);
+                fixedTickets.add(fixedTicket);
             }
         }
 
@@ -110,7 +111,7 @@ public class Executor {
          * le Release comprese tra la IV e la FV
          */
 
-        for (JiraTicket ticket : this.fixedTickets) {
+        for (JiraTicket ticket : fixedTickets) {
             List<RevCommit> associatedCommits = TicketUtil.getCommitsOfTicket(ticket, this.releaseList);
 
             for (RevCommit commit : associatedCommits) {
@@ -136,7 +137,7 @@ public class Executor {
 
     public void writeFiles() {
         //Al momento la metrica isBuggy è calcolata una volta sola in modo preciso (e non realistico)
-        //TODO implementare training set calcolato realisticamente
+        //TO.DO implementare training set calcolato realisticamente
         CsvWriter.writeCsv(projName, EnumFileType.TRAINING, javaClassList);
         CsvWriter.writeCsv(projName, EnumFileType.TESTING, javaClassList);
         ArffWriter.writeArff(projName, EnumFileType.TRAINING, javaClassList);
@@ -147,18 +148,12 @@ public class Executor {
 
     public void getTickets() {
 
-        try { //debug
-            if (this.jiraInfoRetriever == null){ //debug
-                this.jiraInfoRetriever = new JiraInfoRetriever(); //debug
-                this.releaseList = jiraInfoRetriever.getJiraVersions(this.projName.toUpperCase(), false);//debug
-            } //debug
+        try {
+
             this.allTickets = this.jiraInfoRetriever.getAllJiraTickets(this.releaseList, this.projName);
         } catch (IOException | ParseException e) {
             err.println("Errore nella raccolta dei Ticket di jira per " + this.projName);
             e.printStackTrace();
-        } catch (GitAPIException e) {
-            err.println("Errore ma questo tanto è debug");
-            throw new RuntimeException(e);
         }
 
         //temporary, for debug

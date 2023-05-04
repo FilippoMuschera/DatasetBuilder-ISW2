@@ -45,6 +45,8 @@ public class JavaClass {
     private double avgChurn = 0.0; //churn medio all'intero della release
     private int handledExceptions = 0; //numero di eccezioni che la classe si trova a dover gestire all'interno del suo codie
     private int age = 0; //age (numero di versioni da cui esiste la classe) pesata sul LocTouched
+    private int cyclComplexity = 1; //complessità ciclomatica (numero di cammini indipendenti) della classe. Più è alta più è difficile da testare
+                                    //e di conseguenza potrebbe essere più incline ad avere bug al suo interno
 
 
     public JavaClass(String name, String content, Release release) {
@@ -291,6 +293,14 @@ public class JavaClass {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public int getCyclComplexity() {
+        return cyclComplexity;
+    }
+
+    public void setCyclComplexity(int cyclComplexity) {
+        this.cyclComplexity = cyclComplexity;
     }
 }
 

@@ -3,6 +3,7 @@ package it.muschera.execution;
 import com.github.javaparser.ParseResult;
 import it.muschera.model.JavaClass;
 import it.muschera.model.Release;
+import it.muschera.util.CyclomaticComplexityCalculator;
 import it.muschera.util.ReleaseFinder;
 import org.eclipse.jgit.revwalk.RevCommit;
 
@@ -28,9 +29,14 @@ public class ComputeFeatures {
             ComputeFeatures.computeChurnAndLocTouched(javaClass);
             ComputeFeatures.computeHandledExceptions(javaClass);
             ComputeFeatures.computeAge(javaClass, releaseList);
+            ComputeFeatures.computeCyclComplexity(javaClass);
         }
 
 
+    }
+
+    private static void computeCyclComplexity(JavaClass javaClass) {
+        javaClass.setCyclComplexity(CyclomaticComplexityCalculator.calculate(javaClass));
     }
 
     private static void computeAge(JavaClass javaClass, List<Release> releaseList) {
@@ -70,13 +76,13 @@ public class ComputeFeatures {
 
         int numHandledExceptions = 0;
 
-        if (parseResult.getResult().isPresent()) {
-            for (MethodDeclaration method : parseResult.getResult().get().findAll(MethodDeclaration.class)) {
+
+            for (MethodDeclaration method : parseResult.getResult().orElseThrow().findAll(MethodDeclaration.class)) {
                 for (TryStmt tryStmt : method.findAll(TryStmt.class)) {
                     numHandledExceptions += tryStmt.getCatchClauses().size();
                 }
             }
-        }
+
 
         javaClass.setHandledExceptions(numHandledExceptions);
 
