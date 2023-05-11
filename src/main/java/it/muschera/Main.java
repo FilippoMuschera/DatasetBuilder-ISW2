@@ -3,13 +3,23 @@ package it.muschera;
 import it.muschera.entities.BookkeeperEntity;
 import it.muschera.entities.OpenJPAEntity;
 import it.muschera.execution.Executor;
+import it.muschera.filescreators.ClassificatorReportWriter;
+import it.muschera.weka.WekaClassifier;
 
 import static java.lang.System.*;
 
 public class Main {
     public static void main(String[] args) {
-        execProject("bookkeeper");
-        execProject("openjpa");
+        //execProject("bookkeeper");
+        //execProject("openjpa");
+
+        WekaClassifier weka = new WekaClassifier("bookkeeper", 13);
+        try {
+            weka.computeWekaMetrics("bookkeeper-training.arff", "bookkeeper-testing.arff");
+            ClassificatorReportWriter.writeReport("bookkeeper");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
     }

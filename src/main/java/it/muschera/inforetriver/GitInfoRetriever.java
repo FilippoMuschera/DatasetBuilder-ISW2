@@ -50,10 +50,14 @@ public class GitInfoRetriever {
     public List<RevCommit> getAllCommits(Git git, Repository repository) throws GitAPIException, IOException {
 
         List<RevCommit> allCommits = new ArrayList<>();
-        List<Ref> allBranches = git.branchList().setListMode(ListBranchCommand.ListMode.ALL).call();
+        //List<Ref> allBranches = git.branchList().setListMode(ListBranchCommand.ListMode.ALL).call();
+        git.checkout().setName("master");
 
-        for (Ref branch : allBranches) {
-            Iterable<RevCommit> commitsList = git.log().add(repository.resolve(branch.getName())).call();
+
+        //for (Ref branch : allBranches) {
+            //Iterable<RevCommit> commitsList = git.log().add(repository.resolve(branch.getName())).call();
+        Iterable<RevCommit> commitsList = git.log().add(repository.resolve("master")).call();
+
             for (RevCommit commit : commitsList) {
 
                 if (!allCommits.contains(commit)) {
@@ -62,7 +66,7 @@ public class GitInfoRetriever {
 
             }
 
-        }
+       // }
 
         return allCommits;
     }
