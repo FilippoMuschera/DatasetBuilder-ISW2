@@ -73,5 +73,62 @@ public class ClassificatorReportWriter {
 
     }
 
+    public static void avgReportWriter() { //TODO Alcune metriche a volte escono NaN, su una media non va bene imho
+        String fileName = "ClassificationReport-Weka-AVG.csv";
+
+        try (
+                FileWriter fileWriter = new FileWriter(fileName)
+        ) {
+            fileWriter.append("Project,Classifier,FeatureSelection,Sampling,CostSensitive,Precision,Recall,FScore,AUC,Kappa,TP,FN,FP,TN\n");
+
+
+
+
+            for (EvalBundle result : AvgWekaDataHolder.getInstance().getPrintableList()) {
+                fileWriter.append(result.getProjName()).append(",");
+
+                fileWriter.append(result.getClassifier());
+                fileWriter.append(",");
+                fileWriter.append(Boolean.toString(result.isFs()));
+                fileWriter.append(",");
+                if (result.isBalancing())
+                    fileWriter.append(result.getType().toString());
+                else
+                    fileWriter.append("None");
+                fileWriter.append(",");
+                fileWriter.append(Boolean.toString(result.isCostSens()));
+                fileWriter.append(",");
+                fileWriter.append((new DecimalFormat("#.##").format(result.getPrecision()).replace(",", ".")));
+                fileWriter.append(",");
+                fileWriter.append((new DecimalFormat("#.##").format(result.getRecall()).replace(",", ".")));
+                fileWriter.append(",");
+                fileWriter.append((new DecimalFormat("#.##").format(result.getF1()).replace(",", ".")));
+                fileWriter.append(",");
+                fileWriter.append((new DecimalFormat("#.##").format(result.getAuc())).replace(",", "."));
+                fileWriter.append(",");
+                fileWriter.append((new DecimalFormat("#.##").format(result.getKappa())).replace(",", "."));
+                fileWriter.append(",");
+                fileWriter.append((new DecimalFormat("#.##").format(result.getTp()).replace(",", ".")));
+                fileWriter.append(",");
+                fileWriter.append((new DecimalFormat("#.##").format(result.getFn()).replace(",", ".")));
+                fileWriter.append(",");
+                fileWriter.append((new DecimalFormat("#.##").format(result.getFp()).replace(",", ".")));
+                fileWriter.append(",");
+                fileWriter.append((new DecimalFormat("#.##").format(result.getTn()).replace(",", ".")));
+                fileWriter.append("\n");
+
+
+            }
+
+
+        } catch (IOException e) {
+            err.println("Impossible creare .csv report");
+            e.printStackTrace();
+
+
+        }
+
+    }
+
 
 }

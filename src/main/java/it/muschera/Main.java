@@ -13,8 +13,9 @@ public class Main {
     public static void main(String[] args) throws IOException {
         ExecutorV2.cleanEnvironment();
         execProject("bookkeeper");
-        execProject("openjpa");
+        //execProject("openjpa");
         ClassificatorReportWriter.writeReport();
+        ClassificatorReportWriter.avgReportWriter();
 
     }
 
