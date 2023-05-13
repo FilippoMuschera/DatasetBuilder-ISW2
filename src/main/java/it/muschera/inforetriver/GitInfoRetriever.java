@@ -18,6 +18,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+
+
 public class GitInfoRetriever {
 
     private final Repository repo;
@@ -50,13 +52,13 @@ public class GitInfoRetriever {
     public List<RevCommit> getAllCommits(Git git, Repository repository) throws GitAPIException, IOException {
 
         List<RevCommit> allCommits = new ArrayList<>();
-        //List<Ref> allBranches = git.branchList().setListMode(ListBranchCommand.ListMode.ALL).call();
-        git.checkout().setName("master");
+        List<Ref> allBranches = git.branchList().setListMode(ListBranchCommand.ListMode.ALL).call();
+        //git.checkout().setName("master");
 
 
-        //for (Ref branch : allBranches) {
-            //Iterable<RevCommit> commitsList = git.log().add(repository.resolve(branch.getName())).call();
-        Iterable<RevCommit> commitsList = git.log().add(repository.resolve("master")).call();
+        for (Ref branch : allBranches) {
+            Iterable<RevCommit> commitsList = git.log().add(repository.resolve(branch.getName())).call();
+        //Iterable<RevCommit> commitsList = git.log().add(repository.resolve("master")).call();
 
             for (RevCommit commit : commitsList) {
 
@@ -66,7 +68,7 @@ public class GitInfoRetriever {
 
             }
 
-       // }
+        }
 
         return allCommits;
     }

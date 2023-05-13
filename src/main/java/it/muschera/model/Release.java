@@ -35,6 +35,18 @@ public class Release {
         this.addCommits(project);
     }
 
+    public Release(int index, int id, String name, Date firstDate, Date lastDate) {
+
+        this.index = index;
+        this.id = id;
+        this.name = name;
+        this.firstDate = firstDate;
+        this.lastDate = lastDate;
+        this.repository = null;
+
+    }
+
+
     private void addCommits(ProjectInterface projectInterface) throws GitAPIException, IOException {
         //Data la corrente release, gli associamo tutti i commit che la compongono
         GitInfoRetriever gitInfoRetriever = new GitInfoRetriever(this.repository);

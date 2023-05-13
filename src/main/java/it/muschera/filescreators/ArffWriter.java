@@ -4,18 +4,20 @@ import it.muschera.model.JavaClass;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.System.*;
 
 public class ArffWriter {
 
-    private ArffWriter(){
+    private ArffWriter() {
         //solo metodi statici
     }
-    public static void writeArff(String projName, EnumFileType type, List<JavaClass> javaClassesList){
+
+    public static void writeArff(String projName, EnumFileType type, List<JavaClass> javaClassesList, int iter) {
         String fileNameType = (type == EnumFileType.TRAINING) ? "training" : "testing";
-        String csvNameStr = projName + "-" + fileNameType;
+        String arffFileName = projName + "-" + fileNameType + "-" + iter;
 
 
         /*
@@ -25,15 +27,16 @@ public class ArffWriter {
          */
 
         try (
-                FileWriter fileWriter = new FileWriter(csvNameStr + ".arff")
+                FileWriter fileWriter = new FileWriter(arffFileName + ".arff")
 
         ) {
 
             //Name of ARFF dataset
             fileWriter.append("@relation ").append(projName).append("-").append(fileNameType);
 
-            fileWriter.write("\n@attribute RELEASE numeric\n");
-            fileWriter.write("@attribute LOC numeric\n");
+            //debug test: non mettiamo la release nel dataset
+            //fileWriter.write("\n@attribute RELEASE numeric\n");
+            fileWriter.write("\n@attribute LOC numeric\n");
             fileWriter.write("@attribute NR numeric\n");
             fileWriter.write("@attribute N_AUTH numeric\n");
             fileWriter.write("@attribute LOC_ADDED numeric\n");
@@ -47,10 +50,10 @@ public class ArffWriter {
             fileWriter.write("@attribute CYCL_COMPLEX numeric\n");
             fileWriter.write("@attribute IS_BUGGY {'yes', 'no'}\n");
             fileWriter.write("@data\n");
-            for (JavaClass javaClass : ArffWriter.getSplit(javaClassesList, type)) {
+            for (JavaClass javaClass : ArffWriter.getSplit(javaClassesList, type, iter)) {
 
 
-                writeFile(fileWriter, javaClass);
+                writeFile(fileWriter, javaClass, type);
 
 
             }
@@ -62,9 +65,10 @@ public class ArffWriter {
         }
     }
 
-    public static void writeFile(FileWriter fileWriter, JavaClass javaClass) throws IOException {
-        fileWriter.append(Integer.toString(javaClass.getRelease().getIndex()));
-        fileWriter.append(",");
+    public static void writeFile(FileWriter fileWriter, JavaClass javaClass, EnumFileType type) throws IOException {
+        //vedi arffwriter per debug reason
+        //fileWriter.append(Integer.toString(javaClass.getRelease().getIndex()));
+        //fileWriter.append(",");
         fileWriter.append(Integer.toString(javaClass.getLinesOfCode()));
         fileWriter.append(",");
         fileWriter.append(Integer.toString(javaClass.getNr()));
@@ -89,24 +93,34 @@ public class ArffWriter {
         fileWriter.append(",");
         fileWriter.append(Integer.toString(javaClass.getCyclComplexity()));
         fileWriter.append(",");
-        fileWriter.append(javaClass.isBuggyString());
+        if (type.equals(EnumFileType.TRAINING))
+            fileWriter.append(javaClass.isBuggyRealisticString());
+        else if (type.equals(EnumFileType.TESTING)) {
+            fileWriter.append(javaClass.isBuggyPreciseString());
+        }
         fileWriter.append("\n");
     }
 
-    public static List<JavaClass> getSplit(List<JavaClass> javaClassesList, EnumFileType type) {
-        int split = (int) (javaClassesList.size() * 0.66);
-        List<JavaClass> splitListForFile;
+    public static List<JavaClass> getSplit(List<JavaClass> javaClassesList, EnumFileType type, int iter) {
 
-        if (type.equals(EnumFileType.TRAINING)) {
-
-            splitListForFile = javaClassesList.subList(0, split);
+        List<JavaClass> returnList = new ArrayList<>();
+        if (type == EnumFileType.TRAINING) {
+            for (JavaClass javaClass : javaClassesList) {
+                if (javaClass.getRelease().getIndex() < iter) {
+                    returnList.add(javaClass);
+                }
+            }
+        } else if (type == EnumFileType.TESTING) {
+            for (JavaClass javaClass : javaClassesList) {
+                if (javaClass.getRelease().getIndex() == iter) {
+                    returnList.add(javaClass);
+                }
+            }
         }
-        else {
-            splitListForFile = javaClassesList.subList(split, javaClassesList.size());
 
-        }
+        return returnList;
 
-        return splitListForFile;
+
     }
 
 }

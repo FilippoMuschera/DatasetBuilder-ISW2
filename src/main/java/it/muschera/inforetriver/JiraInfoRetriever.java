@@ -42,7 +42,7 @@ public class JiraInfoRetriever {
         for (i = 0; i < versions.length(); i++) {
             String name = "";
             String id = "";
-            if (versions.getJSONObject(i).has("releaseDate")) {
+            if (versions.getJSONObject(i).has("releaseDate") && versions.getJSONObject(i).get("released").equals(true)) {
                 if (versions.getJSONObject(i).has("name"))
                     name = versions.getJSONObject(i).get("name").toString();
                 if (versions.getJSONObject(i).has("id"))
@@ -61,7 +61,7 @@ public class JiraInfoRetriever {
         for (i = 0; i < releases.size(); i++) {
             Date lastDate = formatter.parse(String.valueOf(releases.get(i)));
             //La seconda condizione serve a scartare quella versione, che ha durata di soli 3 giorni e non contiene nessun commit associato
-            if (projName.equals("BOOKKEEPER") && !Objects.equals(releaseID.get(releases.get(i)), Integer.toString(12320244))) {
+            if (projName.equals("BOOKKEEPER")) {
                 releasesList.add(new Release(
                         i + 1,
                         Integer.parseInt(releaseID.get(releases.get(i))),
@@ -81,12 +81,24 @@ public class JiraInfoRetriever {
                         OpenJPAEntity.getInstance()
                 ));
             }
+            else {
+
+                //Cold start case
+                releasesList.add( new Release(
+                        i + 1,
+                        Integer.parseInt(releaseID.get(releases.get(i))),
+                        releaseNames.get(releases.get(i)),
+                        firstDate,
+                        lastDate
+                ));
+
+            }
             firstDate = lastDate;
         }
         if (Boolean.TRUE.equals(generateCsv))
             this.writeToCsv(releasesList, projName);
 
-        return ReleaseFinder.cleanReleaseList(releasesList);
+        return releasesList;
     }
 
     private void writeToCsv(List<Release> releasesList, String projName) {

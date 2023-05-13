@@ -1,5 +1,7 @@
 package it.muschera.weka;
 
+import weka.attributeSelection.CfsSubsetEval;
+import weka.attributeSelection.GreedyStepwise;
 import weka.classifiers.CostMatrix;
 import weka.classifiers.Evaluation;
 import weka.classifiers.bayes.NaiveBayes;
@@ -9,8 +11,6 @@ import weka.classifiers.trees.RandomForest;
 import weka.core.Instances;
 import weka.core.SelectedTag;
 import weka.core.converters.ConverterUtils.DataSource;
-import weka.attributeSelection.CfsSubsetEval;
-import weka.attributeSelection.GreedyStepwise;
 import weka.filters.Filter;
 import weka.filters.supervised.attribute.AttributeSelection;
 import weka.filters.supervised.instance.Resample;
@@ -19,8 +19,8 @@ import weka.filters.supervised.instance.SpreadSubsample;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.lang.System.out;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class WekaClassifier {
@@ -40,6 +40,8 @@ public class WekaClassifier {
     public WekaClassifier(String projName, int i) {
         this.projName = projName;
         this.iteration = i;
+        Logger.getLogger("com.github.fommil").setLevel(Level.OFF);
+
     }
 
     public void computeWekaMetrics(String trainingSet, String testingSet) throws Exception {

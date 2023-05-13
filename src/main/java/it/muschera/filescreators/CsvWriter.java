@@ -11,9 +11,9 @@ public class CsvWriter {
 
     private CsvWriter(){}
 
-    public static void writeCsv(String projName, EnumFileType type, List<JavaClass> javaClassesList){
+    public static void writeCsv(String projName, EnumFileType type, List<JavaClass> javaClassesList, int iter){
         String fileNameType = (type == EnumFileType.TRAINING) ? "training" : "testing";
-        String csvNameStr = projName + "-" + fileNameType;
+        String csvNameStr = projName + "-" + fileNameType + "-" + iter;
 
         /*
          * Nel CSV di Bookkeeper non risulteranno esserci file relativi ad alcune versioni. Analizzando i commit in quelle versioni
@@ -29,14 +29,14 @@ public class CsvWriter {
             //Name of CSV for output
             fileWriter.append("JAVA_CLASS,RELEASE,LOC,NR,NAUTH,LOC_ADDED,MAX_LOC_ADDED,AVG_LOC_ADDED,CHURN,MAX_CHURN,AVG_CHURN,HND_EXCEPT,AGE,CYCL_COMPLEX,IS_BUGGY");
             fileWriter.append("\n");
-            for (JavaClass javaClass : ArffWriter.getSplit(javaClassesList, type)) {
+            for (JavaClass javaClass : ArffWriter.getSplit(javaClassesList, type, iter)) {
 
                 int lastSlashIndex = javaClass.getName().lastIndexOf("/");
                 String name = javaClass.getName().substring(lastSlashIndex + 1);
 
                 fileWriter.append(name);
                 fileWriter.append(",");
-                ArffWriter.writeFile(fileWriter, javaClass);
+                ArffWriter.writeFile(fileWriter, javaClass, type);
 
 
             }

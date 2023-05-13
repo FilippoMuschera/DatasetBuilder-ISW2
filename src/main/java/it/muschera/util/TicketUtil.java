@@ -71,7 +71,7 @@ public class TicketUtil {
         List<Release> affectedVersions = new ArrayList<>();
         int ov = brokenTicket.getOpeningVersion().getIndex();
         int fv = brokenTicket.getFixVersion().getIndex();
-        int iv = (int) (fv - (fv - ov) * p); //TO.DO ARROTONDARE PER ECCESSO?
+        int iv = (int) (fv - (fv - ov) * p);
 
         iv = Math.max(1, iv); //Se con proportion la IV viene <1 la impostiamo a 1 per ovvi motivi
 
@@ -90,7 +90,7 @@ public class TicketUtil {
 
     }
 
-    public static List<RevCommit> getCommitsOfTicket(JiraTicket ticket, List<Release> releaseList) {
+    public static List<RevCommit> getAllCommitsOfTicket(JiraTicket ticket, List<Release> releaseList) {
 
         List<RevCommit> commitList = new ArrayList<>();
         List<RevCommit> commitsOfTicket = new ArrayList<>();
@@ -123,5 +123,31 @@ public class TicketUtil {
         if (brokenTicket.getOpeningVersion().getIndex() > brokenTicket.getFixVersion().getIndex()) //ticket banalmente errato
             return false;
         return brokenTicket.getOpeningVersion().getIndex() != brokenTicket.getFixVersion().getIndex();
+    }
+
+    public static List<RevCommit> getRealisticCommitsOfTickets(JiraTicket ticket, List<Release> releaseList, int iter) {
+
+        List<RevCommit> commitList = new ArrayList<>();
+        List<RevCommit> commitsOfTicket = new ArrayList<>();
+        for (Release rel : releaseList){
+            if (rel.getIndex() < iter) {
+                commitList.addAll(rel.getReleaseCommits().getCommits());
+            }
+        }
+
+        //ora ho una lista completa di tutti i possibili commit per l'iterazione
+
+        for (RevCommit commit : commitList){
+            String commitMessage = commit.getFullMessage();
+
+            if (commitMessage.contains(ticket.getKey() + ":") || commitMessage.contains(ticket.getKey() + "]") || commitMessage.contains(ticket.getKey() + " ") && (!commitsOfTicket.contains(commit))) {
+                commitsOfTicket.add(commit);
+
+
+            }
+        }
+
+        return commitsOfTicket;
+
     }
 }

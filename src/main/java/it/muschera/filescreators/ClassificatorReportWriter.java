@@ -16,9 +16,9 @@ public class ClassificatorReportWriter {
         //solo metodi statici
     }
 
-    public static void writeReport(String projName) {
+    public static void writeReport() {
 
-        String fileName = "ClassificationReport - " + projName.toUpperCase() + ".csv";
+        String fileName = "ClassificationReport-Weka.csv";
 
         try (
                 FileWriter fileWriter = new FileWriter(fileName);

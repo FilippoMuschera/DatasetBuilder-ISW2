@@ -26,7 +26,8 @@ public class JavaClass {
     private String name;
     private String content;
     private Release release;
-    private boolean isBuggy;
+    private boolean isBuggyRealistic;
+    private boolean isBuggyPrecise;
     private List<RevCommit> commitsInvolved = new ArrayList<>();
 
     private List<Integer> addedLinesList = new ArrayList<>();
@@ -265,18 +266,26 @@ public class JavaClass {
         this.deletedLinesList = deletedLinesList;
     }
 
-    public boolean isBuggy() {
-        return isBuggy;
+    public void setBuggyRealistic(boolean isBuggyRealistic) {
+        this.isBuggyRealistic = isBuggyRealistic;
     }
 
-    public void setBuggy(boolean buggy) {
-        isBuggy = buggy;
-    }
-
-    public String isBuggyString() {
-        if (this.isBuggy)
+    public String isBuggyRealisticString() {
+        if (this.isBuggyRealistic)
             return "yes";
-        else return "no";
+        else
+            return "no";
+    }
+
+    public void setBuggyPrecise(boolean isBuggyPrecise) {
+        this.isBuggyPrecise = isBuggyPrecise;
+    }
+
+    public String isBuggyPreciseString() {
+        if (this.isBuggyPrecise)
+            return "yes";
+        else
+            return "no";
     }
 
     public int getHandledExceptions() {

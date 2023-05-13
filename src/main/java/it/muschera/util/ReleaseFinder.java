@@ -44,9 +44,12 @@ public class ReleaseFinder {
     }
 
     public static List<Release> cleanReleaseList(List<Release> releasesList) {
+
+        List<Release> newReleaseList;
         releasesList.removeIf(r -> r.getReleaseCommits().getLastCommit() == null || r.getReleaseCommits().getJavaClasses() == null);
 
-        return releasesList;
+        newReleaseList = new ArrayList<>(releasesList);
+        return newReleaseList;
     }
 
     /*
@@ -55,6 +58,11 @@ public class ReleaseFinder {
     public static List<Release> refactorReleaseList(List<Release> releaseList) {
         int i = 1;
         List<Release> adjustedReleaseList = new ArrayList<>();
+        for (Release release : releaseList) {
+            if (release.getReleaseCommits() == null) {
+                releaseList.remove(release);
+            }
+        }
         for (Release release : releaseList) {
             release.setIndex(i);
             adjustedReleaseList.add(release);
