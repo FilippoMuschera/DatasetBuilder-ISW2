@@ -15,6 +15,8 @@ public class EvaluationParams {
     private IBk iBkN;
     private boolean fs;
     private boolean balancing;
+    private BalancingType balancingType;
+    private boolean costSens;
 
     public BalancingType getBalancingType() {
         return balancingType;
@@ -23,9 +25,6 @@ public class EvaluationParams {
     public void setBalancingType(BalancingType balancingType) {
         this.balancingType = balancingType;
     }
-
-    private BalancingType balancingType;
-    private boolean costSens;
 
     public Instances getTesting() {
         return testing;

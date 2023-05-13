@@ -15,7 +15,6 @@ public class Release {
     private final Repository repository;
 
 
-
     private int index;
     private int id;
     private String name;
@@ -96,6 +95,7 @@ public class Release {
     public Repository getRepository() {
         return repository;
     }
+
     public int getIndex() {
         return index;
     }

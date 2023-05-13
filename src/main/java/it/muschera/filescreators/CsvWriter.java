@@ -9,9 +9,10 @@ import static java.lang.System.*;
 
 public class CsvWriter {
 
-    private CsvWriter(){}
+    private CsvWriter() {
+    }
 
-    public static void writeCsv(String projName, EnumFileType type, List<JavaClass> javaClassesList, int iter){
+    public static void writeCsv(String projName, EnumFileType type, List<JavaClass> javaClassesList, int iter) {
         String fileNameType = (type == EnumFileType.TRAINING) ? "training" : "testing";
         String csvNameStr = projName + "-" + fileNameType + "-" + iter;
 
@@ -27,7 +28,7 @@ public class CsvWriter {
         ) {
 
             //Name of CSV for output
-            fileWriter.append("JAVA_CLASS,RELEASE,LOC,NR,NAUTH,LOC_ADDED,MAX_LOC_ADDED,AVG_LOC_ADDED,CHURN,MAX_CHURN,AVG_CHURN,HND_EXCEPT,AGE,CYCL_COMPLEX,IS_BUGGY");
+            fileWriter.append("JAVA_CLASS,RELEASE,LOC,NR,NAUTH,LOC_ADDED,MAX_LOC_ADDED,AVG_LOC_ADDED,CHURN,MAX_CHURN,AVG_CHURN,HND_EXCEPT,NFIX,CYCL_COMPLEX,IS_BUGGY");
             fileWriter.append("\n");
             for (JavaClass javaClass : ArffWriter.getSplit(javaClassesList, type, iter)) {
 

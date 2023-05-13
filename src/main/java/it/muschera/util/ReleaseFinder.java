@@ -13,9 +13,9 @@ public class ReleaseFinder {
         //solo metodi statici
     }
 
-    public static Release findByName(String releaseName, List<Release> releaseList){
+    public static Release findByName(String releaseName, List<Release> releaseList) {
 
-        for (Release release : releaseList){
+        for (Release release : releaseList) {
             if (release.getName().equals(releaseName))
                 return release;
         }
@@ -24,9 +24,9 @@ public class ReleaseFinder {
 
     }
 
-    public static Release findByDate(Date ticketDate, List<Release> releaseList){
+    public static Release findByDate(Date ticketDate, List<Release> releaseList) {
 
-        for (Release release : releaseList){
+        for (Release release : releaseList) {
             if (ticketDate.after(release.getFirstDate()) && ticketDate.before(release.getLastDate()))
                 return release;
         }
@@ -36,7 +36,7 @@ public class ReleaseFinder {
 
     public static Release findByCommit(RevCommit commit, List<Release> releaseList) {
         for (Release rel : releaseList) {
-            if (rel.getReleaseCommits().getCommits().contains(commit)){
+            if (rel.getReleaseCommits().getCommits().contains(commit)) {
                 return rel;
             }
         }
@@ -73,9 +73,9 @@ public class ReleaseFinder {
     }
 
     public static Release findByIndex(int relIndex, List<Release> releaseList) {
-        for (Release release : releaseList){
+        for (Release release : releaseList) {
             if (release.getIndex() == relIndex)
-                return  release;
+                return release;
         }
 
         return null;

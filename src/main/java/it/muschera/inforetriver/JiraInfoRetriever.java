@@ -28,6 +28,51 @@ public class JiraInfoRetriever {
     private Map<LocalDateTime, String> releaseID;
     private List<LocalDateTime> releases;
 
+    private static JiraTicket createTicketInstance(Integer i, JSONArray issues, List<Release> releasesList) throws ParseException {
+
+        JiraTicket ticket = null;
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+
+        try {
+            String key = (issues.getJSONObject(i % 1000).get("key").toString());
+            JSONObject fields = issues.getJSONObject(i % 1000).getJSONObject("fields");
+
+            String resolutionDateStr = fields.get("resolutiondate").toString();
+            String creationDateStr = fields.get("created").toString();
+            JSONArray listAV = fields.getJSONArray("versions");
+
+            Date resolutionDate = formatter.parse(resolutionDateStr);
+            Date creationDate = formatter.parse(creationDateStr);
+            ArrayList<Release> affectedVersionsList = new ArrayList<>();
+
+            for (int k = 0; k < listAV.length(); k++) {
+                Release affectedVersion = ReleaseFinder.findByName(listAV.getJSONObject(k).get("name").toString(), releasesList);
+
+                if (affectedVersion != null) {
+                    affectedVersionsList.add(affectedVersion);
+                }
+
+            }
+            Release openVersion = ReleaseFinder.findByDate(creationDate, releasesList);
+            Release fixVersion = ReleaseFinder.findByDate(resolutionDate, releasesList);
+
+            if (openVersion != null && fixVersion != null) {
+                ticket = new JiraTicket(key, openVersion, fixVersion, affectedVersionsList);
+
+
+            }
+
+        } catch (JSONException e) {
+            /*
+             * Se uno dei ticket non ha i campi che ci servono lo scartiamo perchè non è utilizzabile
+             */
+
+        }
+
+        return ticket;
+
+    }
+
     public List<Release> getJiraVersions(String projName, Boolean generateCsv) throws IOException, JSONException, ParseException, GitAPIException {
 
         //Fills the arraylist with releases dates and orders them
@@ -70,8 +115,7 @@ public class JiraInfoRetriever {
                         lastDate,
                         BookkeeperEntity.getInstance()
                 ));
-            }
-            else if (projName.equals("OPENJPA")) {
+            } else if (projName.equals("OPENJPA")) {
                 releasesList.add(new Release(
                         i + 1,
                         Integer.parseInt(releaseID.get(releases.get(i))),
@@ -80,11 +124,10 @@ public class JiraInfoRetriever {
                         lastDate,
                         OpenJPAEntity.getInstance()
                 ));
-            }
-            else {
+            } else {
 
                 //Cold start case
-                releasesList.add( new Release(
+                releasesList.add(new Release(
                         i + 1,
                         Integer.parseInt(releaseID.get(releases.get(i))),
                         releaseNames.get(releases.get(i)),
@@ -149,9 +192,9 @@ public class JiraInfoRetriever {
 
         List<JiraTicket> ticketsList = new ArrayList<>();
 
-        Integer i=0;
-        int j=0;
-        int total=1;
+        Integer i = 0;
+        int j = 0;
+        int total = 1;
 
         do {
             //Only gets a max of 1000 at a time, so must do this multiple times if bugs > 1000
@@ -162,7 +205,7 @@ public class JiraInfoRetriever {
             String url = "https://issues.apache.org/jira/rest/api/2/search?jql=project=%22"
                     + projName.toUpperCase() + "%22AND%22issueType%22=%22Bug%22AND(%22status%22=%22closed%22OR"
                     + "%22status%22=%22resolved%22)AND%22resolution%22=%22fixed%22&fields=key,resolutiondate,versions,created&startAt="
-                    + i.toString() + "&maxResults=" + Integer.toString(j);
+                    + i + "&maxResults=" + j;
 
             JSONObject json = JSONUtil.readJsonFromUrl(url);
             JSONArray issues = json.getJSONArray("issues");
@@ -171,7 +214,7 @@ public class JiraInfoRetriever {
             for (; i < total && i < j; i++) {
 
                 JiraTicket ticket = createTicketInstance(i, issues, releasesList);
-                if(ticket != null) {
+                if (ticket != null) {
                     ticketsList.add(ticket);
                 }
 
@@ -180,51 +223,6 @@ public class JiraInfoRetriever {
         } while (i < total);
 
         return ticketsList;
-
-    }
-
-    private static JiraTicket createTicketInstance(Integer i, JSONArray issues, List<Release> releasesList) throws ParseException {
-
-        JiraTicket ticket = null;
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-
-        try {
-            String key = (issues.getJSONObject(i%1000).get("key").toString());
-            JSONObject fields = issues.getJSONObject(i%1000).getJSONObject("fields");
-
-            String resolutionDateStr = fields.get("resolutiondate").toString();
-            String creationDateStr = fields.get("created").toString();
-            JSONArray listAV = fields.getJSONArray("versions");
-
-            Date resolutionDate = formatter.parse(resolutionDateStr);
-            Date creationDate = formatter.parse(creationDateStr);
-            ArrayList<Release> affectedVersionsList = new ArrayList<>();
-
-            for(int k=0; k<listAV.length(); k++) {
-                Release affectedVersion = ReleaseFinder.findByName(listAV.getJSONObject(k).get("name").toString(), releasesList);
-
-                if(affectedVersion != null) {
-                    affectedVersionsList.add(affectedVersion);
-                }
-
-            }
-            Release openVersion = ReleaseFinder.findByDate(creationDate, releasesList);
-            Release fixVersion = ReleaseFinder.findByDate(resolutionDate, releasesList);
-
-            if(openVersion != null && fixVersion != null) {
-                ticket = new JiraTicket(key, openVersion, fixVersion, affectedVersionsList);
-
-
-            }
-
-        } catch(JSONException e) {
-            /*
-             * Se uno dei ticket non ha i campi che ci servono lo scartiamo perchè non è utilizzabile
-             */
-
-        }
-
-        return ticket;
 
     }
 

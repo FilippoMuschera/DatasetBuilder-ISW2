@@ -2,17 +2,18 @@ package it.muschera;
 
 import it.muschera.entities.BookkeeperEntity;
 import it.muschera.entities.OpenJPAEntity;
-import it.muschera.execution.Executor;
 import it.muschera.execution.ExecutorV2;
 import it.muschera.filescreators.ClassificatorReportWriter;
-import it.muschera.weka.WekaClassifier;
+
+import java.io.IOException;
 
 import static java.lang.System.*;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        ExecutorV2.cleanEnvironment();
         execProject("bookkeeper");
-        //execProject("openjpa");
+        execProject("openjpa");
         ClassificatorReportWriter.writeReport();
 
     }
@@ -22,14 +23,11 @@ public class Main {
         if (projName.equals("bookkeeper")) {
             BookkeeperEntity b = BookkeeperEntity.getInstance();
             b.checkInit();
-        }
-        else if (projName.equals("openjpa")) {
+        } else if (projName.equals("openjpa")) {
 
             OpenJPAEntity jpa = OpenJPAEntity.getInstance();
             jpa.checkInit();
-        }
-        else
-        {
+        } else {
             err.println("Progetto Sconosciuto");
             return;
         }

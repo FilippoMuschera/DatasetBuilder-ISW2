@@ -102,16 +102,11 @@ public class WekaClassifier {
 
         doEval(evaluationParams);
 
-        //FEATURE SLECTION: SI, BALANCING: SI (OVERSAMPLING), COST SENSITIVE: NO //TODO rimettere FS
-        evaluationParams.setTesting(testing);
-        evaluationParams.setTraining(overSampleDataset(training));
+        //FEATURE SLECTION: SI, BALANCING: SI (OVERSAMPLING), COST SENSITIVE: NO
+        evaluationParams.setTesting(testingFeatureSelected);
+        evaluationParams.setTraining(overSampleDataset(trainingFeatureSelected));
         evaluationParams.setFs(false);
         evaluationParams.setBalancingType(BalancingType.OVERSAMPLING);
-        IBk ibk = new IBk();
-        String[] options = new String[]{ "-K", "5", "-W", "0", "-A", "weka.core.neighboursearch.LinearNNSearch -A \"weka.core.EuclideanDistance -R first-last\"" };
-        ibk.setOptions(options);
-        evaluationParams.setiBkN(ibk);
-
 
         doEval(evaluationParams);
 
@@ -130,13 +125,10 @@ public class WekaClassifier {
         doEvalCostSensitive(costSensitiveClassifier, trainingFeatureSelected, testingFeatureSelected);
 
 
-
-
-
     }
 
     private Instances overSampleDataset(Instances training) throws Exception {
-        training.setClassIndex(training.numAttributes() -1);
+        training.setClassIndex(training.numAttributes() - 1);
         Resample resample = new Resample();
         resample.setBiasToUniformClass(1.0);
         resample.setInputFormat(training);
@@ -151,7 +143,7 @@ public class WekaClassifier {
         CfsSubsetEval eval = new CfsSubsetEval();
         GreedyStepwise search = new GreedyStepwise();
 
-        search.setSearchBackwards(false);
+        search.setSearchBackwards(true);
         filter.setEvaluator(eval);
         filter.setSearch(search);
         filter.setInputFormat(training);
@@ -170,11 +162,11 @@ public class WekaClassifier {
 
     private Instances smoteDataset(Instances trainingSet) throws Exception {
 
-        trainingSet.setClassIndex(trainingSet.numAttributes() -1);
+        trainingSet.setClassIndex(trainingSet.numAttributes() - 1);
         SMOTE smote = new SMOTE();
         int minority = trainingSet.attributeStats(trainingSet.classIndex()).nominalCounts[0];
         int majority = trainingSet.attributeStats(trainingSet.classIndex()).nominalCounts[1];
-        double percentage = ((1.0)*majority - minority)/minority;
+        double percentage = ((1.0) * majority - minority) / minority;
         smote.setPercentage(percentage);
         smote.setInputFormat(trainingSet);
         smote.setClassValue("0");
@@ -183,7 +175,7 @@ public class WekaClassifier {
     }
 
     private Instances underSampleDataset(Instances trainingSet) throws Exception {
-        trainingSet.setClassIndex(trainingSet.numAttributes() -1);
+        trainingSet.setClassIndex(trainingSet.numAttributes() - 1);
         SpreadSubsample spreadSubsample = new SpreadSubsample();
         spreadSubsample.setDistributionSpread(1.0);
         spreadSubsample.setInputFormat(trainingSet);
@@ -222,7 +214,6 @@ public class WekaClassifier {
         addResultToSet(evaluation, IBKN, true, false, true, BalancingType.NONE);
 
 
-
     }
 
     public void doEval(EvaluationParams params) throws Exception {
@@ -232,7 +223,7 @@ public class WekaClassifier {
         IBk iBk1 = params.getiBk1();
         IBk iBkN = params.getiBkN();
         boolean fs = params.isFs();
-        boolean samp = params. isBalancing();
+        boolean samp = params.isBalancing();
         boolean costSens = params.isCostSens();
         Instances training = params.getTraining();
         Instances testing = params.getTesting();
@@ -259,37 +250,29 @@ public class WekaClassifier {
         addResultToSet(eval, IBKN, fs, samp, costSens, balancingType);
 
 
-
-
-
-
-
-
-
-
     }
 
     public void addResultToSet(Evaluation eval, String classifier, boolean fs, boolean samp, boolean costSens, BalancingType balancingType) {
         EvaluationSet evaluationSet = EvaluationSet.getInstance();
-        evaluationSet.getEvaluationSetList().add(
-                new WekaResultEntity(
-                        this.projName,
-                        this.iteration,
-                        classifier,
-                        fs,
-                        samp,
-                        costSens,
-                        eval.precision(0),
-                        eval.recall(0),
-                        eval.areaUnderROC(0),
-                        eval.kappa(),
-                        balancingType
-                )
-
+        WekaResultEntity resultEntity = new WekaResultEntity(
+                this.projName,
+                this.iteration,
+                classifier,
+                fs,
+                samp,
+                costSens,
+                eval.precision(0),
+                eval.recall(0),
+                eval.areaUnderROC(0),
+                eval.kappa(),
+                balancingType
         );
+        resultEntity.setTp(eval.numTruePositives(0));
+        resultEntity.setTn(eval.numTrueNegatives(0));
+        resultEntity.setFp(eval.numFalsePositives(0));
+        resultEntity.setFn(eval.numFalseNegatives(0));
+        evaluationSet.getEvaluationSetList().add(resultEntity);
     }
-
-
 
 
 }

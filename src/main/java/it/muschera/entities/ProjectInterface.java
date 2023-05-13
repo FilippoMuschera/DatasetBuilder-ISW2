@@ -6,8 +6,8 @@ import org.eclipse.jgit.lib.Repository;
 public interface ProjectInterface {
 
 
-    public Repository getRepository();
+    Repository getRepository();
 
-    public Git getGit();
+    Git getGit();
 
 }

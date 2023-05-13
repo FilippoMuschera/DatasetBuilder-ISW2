@@ -33,6 +33,8 @@ public class JavaClass {
     private List<Integer> addedLinesList = new ArrayList<>();
     private List<Integer> deletedLinesList = new ArrayList<>();
 
+    private RevCommit firstAppearance = null;
+
 
     private int linesOfCode = 0;
     private int linesOfCodeTouched = 0; //somma delle righe di codice aggiunte/rimosse all'interno della release
@@ -45,9 +47,16 @@ public class JavaClass {
     private int maxChurn = 0; //valore massimo di churn che si incontra all'interno della release
     private double avgChurn = 0.0; //churn medio all'intero della release
     private int handledExceptions = 0; //numero di eccezioni che la classe si trova a dover gestire all'interno del suo codie
-    private int age = 0; //age (numero di versioni da cui esiste la classe) pesata sul LocTouched
-    private int cyclComplexity = 1; //complessità ciclomatica (numero di cammini indipendenti) della classe. Più è alta più è difficile da testare
-                                    //e di conseguenza potrebbe essere più incline ad avere bug al suo interno
+
+    /*
+     * NFix è il numero di bug fixati per questa classe. Viene incrementato in due momenti diversi. Quando si chiama il metodo ComputeFeatures.ComputeMetricNFix, che
+     * guarda il numero di big fixati durante la release corrente (FV = OV). Poi quando si va a calcolare (in modo realistico) la buggyness della classe, si aumenta
+     * di un NFix se la classe è identificata come buggy, perchè vuol dire che aveva un bug che è durato per più versioni, e quindi non era stato conteggiato in
+     * ComputeMetricNFix, che va a cercare solo nei ticket con FV = OV.
+     */
+    private int nFix = 0;
+    private int cyclComplexity = 1; //Complessità ciclomatica (numero di cammini indipendenti) della classe. Più è alta più è difficile da testare
+    //e di conseguenza potrebbe essere più incline ad avere bug al suo interno
 
 
     public JavaClass(String name, String content, Release release) {
@@ -61,7 +70,7 @@ public class JavaClass {
     public void doLinesAddedAndDeleted() { //verrà chiamato nel momento in cui sarà necessario che le liste siano riempite
         try {
             computeAddedAndDeletedLinesList(this);
-        } catch (IOException e){
+        } catch (IOException e) {
             err.println("Impossibile calcolare added/deleted lines per la classe");
             e.printStackTrace();
         }
@@ -70,8 +79,8 @@ public class JavaClass {
     public void computeAddedAndDeletedLinesList(JavaClass javaClass) throws IOException {
 
 
-        for(RevCommit comm : javaClass.getCommitsInvolved()) {
-            try(DiffFormatter diffFormatter = new DiffFormatter(DisabledOutputStream.INSTANCE)) {
+        for (RevCommit comm : javaClass.getCommitsInvolved()) {
+            try (DiffFormatter diffFormatter = new DiffFormatter(DisabledOutputStream.INSTANCE)) {
 
                 RevCommit parentComm = comm.getParent(0); //commit precedente
 
@@ -79,8 +88,8 @@ public class JavaClass {
                 diffFormatter.setDiffComparator(RawTextComparator.DEFAULT);
 
                 List<DiffEntry> diffs = diffFormatter.scan(parentComm.getTree(), comm.getTree());
-                for(DiffEntry entry : diffs) { //ogni DiffEntry rappresenta un cambiamento alla classe
-                    if(entry.getNewPath().equals(javaClass.getName())) {
+                for (DiffEntry entry : diffs) { //ogni DiffEntry rappresenta un cambiamento alla classe
+                    if (entry.getNewPath().equals(javaClass.getName())) {
                         javaClass.getAddedLinesList().add(getAddedLines(diffFormatter, entry));
                         javaClass.getDeletedLinesList().add(getDeletedLines(diffFormatter, entry));
 
@@ -88,7 +97,7 @@ public class JavaClass {
 
                 }
 
-            } catch(ArrayIndexOutOfBoundsException e) {
+            } catch (ArrayIndexOutOfBoundsException e) {
                 //se il commit non ha un parent non posso calcoalre le linee aggiunte/rimosse
                 //di conseguenza la lista rimarra vuota e le metriche relative rimarranno
                 //inizializzate a zero, come da inizializzazione della classe
@@ -126,7 +135,7 @@ public class JavaClass {
     private int getDeletedLines(DiffFormatter diffFormatter, DiffEntry entry) throws IOException {
 
         int deletedLines = 0;
-        for(Edit edit : diffFormatter.toFileHeader(entry).toEditList()) {
+        for (Edit edit : diffFormatter.toFileHeader(entry).toEditList()) {
             deletedLines += edit.getLengthB();
 
         }
@@ -135,6 +144,14 @@ public class JavaClass {
     }
 
     //getter & setter
+
+    public int getnFix() {
+        return nFix;
+    }
+
+    public void setnFix(int nFix) {
+        this.nFix = nFix;
+    }
 
     public String getName() {
         return name;
@@ -176,15 +193,6 @@ public class JavaClass {
         this.commitsInvolved = commitsInvolved;
     }
 
-    public void setNr(int nr) {
-        this.nr = nr;
-    }
-
-
-    public void setnAuth(int nAuth) {
-        this.nAuth = nAuth;
-    }
-
     public int getLinesOfCodeTouched() {
         return linesOfCodeTouched;
     }
@@ -197,8 +205,16 @@ public class JavaClass {
         return nr;
     }
 
+    public void setNr(int nr) {
+        this.nr = nr;
+    }
+
     public int getnAuth() {
         return nAuth;
+    }
+
+    public void setnAuth(int nAuth) {
+        this.nAuth = nAuth;
     }
 
     public int getLocAdded() {
@@ -296,20 +312,20 @@ public class JavaClass {
         this.handledExceptions = handledExceptions;
     }
 
-    public int getAge() {
-        return this.age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
     public int getCyclComplexity() {
         return cyclComplexity;
     }
 
     public void setCyclComplexity(int cyclComplexity) {
         this.cyclComplexity = cyclComplexity;
+    }
+
+    public RevCommit getFirstAppearance() {
+        return firstAppearance;
+    }
+
+    public void setFirstAppearance(RevCommit firstAppearance) {
+        this.firstAppearance = firstAppearance;
     }
 }
 

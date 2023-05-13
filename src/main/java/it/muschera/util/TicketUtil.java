@@ -17,7 +17,7 @@ public class TicketUtil {
 
         boolean isConsistent = false;
 
-        if (ticket.getAffectedVersions() == null || ticket.getAffectedVersions().isEmpty()){
+        if (ticket.getAffectedVersions() == null || ticket.getAffectedVersions().isEmpty()) {
             //Se il ticket non ha affected versions, non ci serve per il calcolo del proportion e lo scartiamo
             return false;
         }
@@ -26,7 +26,7 @@ public class TicketUtil {
             return false;
 
         for (Release affectedVersion : ticket.getAffectedVersions()) {
-            if (affectedVersion.getIndex() >= ticket.getFixVersion().getIndex()){
+            if (affectedVersion.getIndex() >= ticket.getFixVersion().getIndex()) {
                 //Se la fix version risulta anche affected, il ticket non è consistente (Deve essere sempre AV < FV)
                 //Altrimenti, se la fix version è anche affected, non è realmente "fixed".
                 return false;
@@ -94,13 +94,13 @@ public class TicketUtil {
 
         List<RevCommit> commitList = new ArrayList<>();
         List<RevCommit> commitsOfTicket = new ArrayList<>();
-        for (Release rel : releaseList){
+        for (Release rel : releaseList) {
             commitList.addAll(rel.getReleaseCommits().getCommits());
         }
 
         //ora ho una lista completa di tutti i possibili commit
 
-        for (RevCommit commit : commitList){
+        for (RevCommit commit : commitList) {
             String commitMessage = commit.getFullMessage();
 
             /*
@@ -110,7 +110,7 @@ public class TicketUtil {
              * message non è quello che sto cercando. Per questo scriviamo le if-condition in questo modo.
              */
             if (commitMessage.contains(ticket.getKey() + ":") || commitMessage.contains(ticket.getKey() + "]") || commitMessage.contains(ticket.getKey() + " ") && (!commitsOfTicket.contains(commit))) {
-                    commitsOfTicket.add(commit);
+                commitsOfTicket.add(commit);
 
 
             }
@@ -129,7 +129,7 @@ public class TicketUtil {
 
         List<RevCommit> commitList = new ArrayList<>();
         List<RevCommit> commitsOfTicket = new ArrayList<>();
-        for (Release rel : releaseList){
+        for (Release rel : releaseList) {
             if (rel.getIndex() < iter) {
                 commitList.addAll(rel.getReleaseCommits().getCommits());
             }
@@ -137,7 +137,7 @@ public class TicketUtil {
 
         //ora ho una lista completa di tutti i possibili commit per l'iterazione
 
-        for (RevCommit commit : commitList){
+        for (RevCommit commit : commitList) {
             String commitMessage = commit.getFullMessage();
 
             if (commitMessage.contains(ticket.getKey() + ":") || commitMessage.contains(ticket.getKey() + "]") || commitMessage.contains(ticket.getKey() + " ") && (!commitsOfTicket.contains(commit))) {

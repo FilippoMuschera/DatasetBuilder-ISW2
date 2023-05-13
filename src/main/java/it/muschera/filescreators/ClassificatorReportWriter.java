@@ -3,6 +3,7 @@ package it.muschera.filescreators;
 import it.muschera.weka.EvaluationSet;
 import it.muschera.weka.WekaResultEntity;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -12,7 +13,7 @@ import static java.lang.System.*;
 public class ClassificatorReportWriter {
 
 
-    private ClassificatorReportWriter(){
+    private ClassificatorReportWriter() {
         //solo metodi statici
     }
 
@@ -21,11 +22,9 @@ public class ClassificatorReportWriter {
         String fileName = "ClassificationReport-Weka.csv";
 
         try (
-                FileWriter fileWriter = new FileWriter(fileName);
-                )
-
-        {
-            fileWriter.append("Project,Iteration,Classifier,FeatureSelection,Sampling,CostSensitive,Precision,Recall,AUC,Kappa\n");
+                FileWriter fileWriter = new FileWriter(fileName)
+        ) {
+            fileWriter.append("Project,Iteration,Classifier,FeatureSelection,Sampling,CostSensitive,Precision,Recall,AUC,Kappa,TP,FN,FP,TN\n");
 
 
             for (WekaResultEntity result : EvaluationSet.getInstance().getEvaluationSetList()) {
@@ -50,10 +49,18 @@ public class ClassificatorReportWriter {
                 fileWriter.append((new DecimalFormat("#.##").format(result.getAuc())).replace(",", "."));
                 fileWriter.append(",");
                 fileWriter.append((new DecimalFormat("#.##").format(result.getKappa())).replace(",", "."));
+                fileWriter.append(",");
+                fileWriter.append(Double.toString(result.getTp()));
+                fileWriter.append(",");
+                fileWriter.append(Double.toString(result.getFn()));
+                fileWriter.append(",");
+                fileWriter.append(Double.toString(result.getFp()));
+                fileWriter.append(",");
+                fileWriter.append(Double.toString(result.getTn()));
                 fileWriter.append("\n");
 
-            }
 
+            }
 
 
         } catch (IOException e) {

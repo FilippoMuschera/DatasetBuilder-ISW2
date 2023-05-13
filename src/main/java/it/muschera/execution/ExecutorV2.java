@@ -53,6 +53,13 @@ public class ExecutorV2 {
         this.projName = projName;
     }
 
+    public static void cleanEnvironment() throws IOException {
+        File directory = new File(".");
+        for (File file : Objects.requireNonNull(directory.listFiles())) {
+            if (file.isFile() && file.getName().endsWith(".csv") || file.getName().endsWith(".arff"))
+                Files.delete(Path.of(file.getPath()));
+        }
+    }
 
     /*
      * Questo metodo viene eseguito solo la prima volta, ed è scollegato dal walk forward, perchè non fa altro che costruire la lista di JavaClasses e calcolarne
@@ -60,7 +67,7 @@ public class ExecutorV2 {
      * una volta sola, e poi ad ogni iterazione ne andremo a usare una porzione. Ogni javaClass poi verrà identificata come buggy, ad ogni terazione sia in modo
      * REALISTICO per il training, che PERCISO per il testing.
      */
-    private void buildDatasetFirstTime() throws IOException {
+    private void buildDatasetFirstTime() throws IOException, ParseException, GitAPIException {
         this.jiraInfoRetriever = new JiraInfoRetriever();
         try {
             this.releaseList = jiraInfoRetriever.getJiraVersions(this.projName.toUpperCase(), true);
@@ -79,13 +86,13 @@ public class ExecutorV2 {
 
         for (Release release : releaseList) {
 
-                ReleaseCommits releaseCommits = release.getReleaseCommits();
-                Map<String, String> javaClasses = releaseCommits.getJavaClasses();
+            ReleaseCommits releaseCommits = release.getReleaseCommits();
+            Map<String, String> javaClasses = releaseCommits.getJavaClasses();
 
-                for (Map.Entry<String, String> singleClass : javaClasses.entrySet()) {
-                    JavaClass javaClass = new JavaClass(singleClass.getKey(), singleClass.getValue(), release);
-                    this.allJavaClasses.add(javaClass);
-                }
+            for (Map.Entry<String, String> singleClass : javaClasses.entrySet()) {
+                JavaClass javaClass = new JavaClass(singleClass.getKey(), singleClass.getValue(), release);
+                this.allJavaClasses.add(javaClass);
+            }
 
 
         }
@@ -95,9 +102,6 @@ public class ExecutorV2 {
         out.println("JavaClassList creata correttamente");
 
         ComputeFeatures.computeFeatures(this.allJavaClasses, this.releaseList);
-
-
-
 
 
     }
@@ -113,7 +117,6 @@ public class ExecutorV2 {
         }
 
 
-
     }
 
     private void getAllConsistentTickets() {
@@ -122,7 +125,7 @@ public class ExecutorV2 {
 
         for (JiraTicket ticket : this.allTickets) {
 
-            if (TicketUtil.isConsistent(ticket)){
+            if (TicketUtil.isConsistent(ticket)) {
                 //setta la IV, e controlla che non ci siano buchi nelle AV (se ci sono li riempe, non scarta il ticket)
                 JiraTicket goodTicket = TicketUtil.makeTicketAccurate(ticket, this.releaseList);
                 this.consistentTickets.add(goodTicket);
@@ -132,12 +135,11 @@ public class ExecutorV2 {
 
     }
 
-    private void doProportion(List<JiraTicket> ticketList){
+    private void doProportion(List<JiraTicket> ticketList) {
         out.println("Number of consistent tickets for iteration " + this.iteration + " is " + ticketList.size());
         if (ticketList.size() >= 5) {
             this.p = Proportion.computeProportionValue(this.consistentTickets);
-        }
-        else {
+        } else {
             this.p = Proportion.coldStart();
         }
     }
@@ -188,8 +190,7 @@ public class ExecutorV2 {
 
     }
 
-
-    private void evaluateBuggynessPrecisely(){
+    private void evaluateBuggynessPrecisely() {
         List<JiraTicket> fixedTickets;
         /*
          * Questo metodo (e i metodi che chiama) hanno l'obiettivo di calcolare, per ogni classe java già costruita, presente in
@@ -203,7 +204,6 @@ public class ExecutorV2 {
          */
 
         //Qui sappiamo che P è stato già inizializzato, perché questa funzione nel flusso di esecuzione è chiamata dopo "doProportion"
-
 
 
         fixedTickets = new ArrayList<>(this.consistentTickets); //Questi ticket sono già consistent, li aggiungo subito
@@ -260,12 +260,7 @@ public class ExecutorV2 {
 
     }
 
-
-
-
-
     public void runV2() throws Exception {
-        this.cleanEnvironment();
         out.println("Starting... Preparing to build the initial dataset structures");
         this.buildDatasetFirstTime();
         this.getAllTickets();
@@ -288,6 +283,7 @@ public class ExecutorV2 {
             out.println("Iteration [" + this.iteration + "] has proportion = " + this.p);
             this.evaluateBuggynessRealistically();
             this.evaluateBuggynessPrecisely();
+            ComputeFeatures.computeMetricNfix(this.allTickets, this.allJavaClasses, this.releaseList, this.iteration); //lo faccio qui perchè mi servono i ticket, e va fatto iter per iter
             out.println("Buggyness (both real and precise) correctly evaluated for this iteration");
             this.writeFiles(false);
             out.println("Output files produced for this iteration");
@@ -297,7 +293,7 @@ public class ExecutorV2 {
             WekaClassifier weka = new WekaClassifier(this.projName, this.iteration);
             weka.computeWekaMetrics(trainingSet, testingSet);
             out.println("Weka ML ran. Starting next iteration if present");
-            if (this.iteration == (this.releaseList.size())/2)
+            if (this.iteration == (this.releaseList.size()) / 2)
                 isThereNextIteration = false;
             else
                 this.iteration++;
@@ -306,16 +302,6 @@ public class ExecutorV2 {
         }
 
     }
-
-    private void cleanEnvironment() throws IOException {
-        File directory = new File(".");
-        for (File file : Objects.requireNonNull(directory.listFiles())) {
-            if (file.isFile() && file.getName().endsWith(".csv") || file.getName().endsWith(".arff"))
-                Files.delete(Path.of(file.getPath()));
-        }
-    }
-
-
 
 
 }
