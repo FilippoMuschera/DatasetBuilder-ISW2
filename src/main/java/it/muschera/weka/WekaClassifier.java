@@ -32,7 +32,7 @@ public class WekaClassifier {
     private static final String NAIVE_BAYES = "Naive Bayes";
 
 
-    private static final String IBK1 = "IBk (k=1)";
+    private static final String IBK1 = "IBk";
     private static final String MLP = "MultiLayer Perceptron";
 
     private final int iteration;
