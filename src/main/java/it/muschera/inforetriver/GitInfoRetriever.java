@@ -18,11 +18,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+
 public class GitInfoRetriever {
 
     private final Repository repo;
 
-    public GitInfoRetriever(Repository repository) {this.repo = repository;}
+    public GitInfoRetriever(Repository repository) {
+        this.repo = repository;
+    }
 
     private static RevCommit getLastCommit(List<RevCommit> commitsList) {
 
@@ -50,13 +53,11 @@ public class GitInfoRetriever {
     public List<RevCommit> getAllCommits(Git git, Repository repository) throws GitAPIException, IOException {
 
         List<RevCommit> allCommits = new ArrayList<>();
-        //List<Ref> allBranches = git.branchList().setListMode(ListBranchCommand.ListMode.ALL).call();
-        git.checkout().setName("master");
+        List<Ref> allBranches = git.branchList().setListMode(ListBranchCommand.ListMode.ALL).call();
 
 
-        //for (Ref branch : allBranches) {
-            //Iterable<RevCommit> commitsList = git.log().add(repository.resolve(branch.getName())).call();
-        Iterable<RevCommit> commitsList = git.log().add(repository.resolve("master")).call();
+        for (Ref branch : allBranches) {
+            Iterable<RevCommit> commitsList = git.log().add(repository.resolve(branch.getName())).call();
 
             for (RevCommit commit : commitsList) {
 
@@ -66,7 +67,7 @@ public class GitInfoRetriever {
 
             }
 
-       // }
+        }
 
         return allCommits;
     }
@@ -102,17 +103,16 @@ public class GitInfoRetriever {
         for (RevCommit commit : javaClass.getRelease().getReleaseCommits().getCommits()) {
 
 
-
-                for (DiffEntry entry : Objects.requireNonNull(JavaClassFinder.getDiffs(commit, this.repo))) {
-                    //Come da specifica, solo .java (scartiamo i test)
-                    //controlliamo che il "diff" sia per una modifica e non un add/rename/delete ecc...
-                    //controlliamo che la classe modificata sia uguale a quella che ci viene passata come parametro
-                    if (entry.getChangeType().equals(DiffEntry.ChangeType.MODIFY) && entry.getNewPath().contains(".java") && !entry.getNewPath().contains("/test/") && (entry.getNewPath().equals(javaClass.getName()))){
-                            commitsThatModifiedClass.add(commit);
-
-                    }
+            for (DiffEntry entry : Objects.requireNonNull(JavaClassFinder.getDiffs(commit, this.repo))) {
+                //Come da specifica, solo .java (scartiamo i test)
+                //controlliamo che il "diff" sia per una modifica e non un add/rename/delete ecc...
+                //controlliamo che la classe modificata sia uguale a quella che ci viene passata come parametro
+                if (entry.getChangeType().equals(DiffEntry.ChangeType.MODIFY) && entry.getNewPath().contains(".java") && !entry.getNewPath().contains("/test/") && (entry.getNewPath().equals(javaClass.getName()))) {
+                    commitsThatModifiedClass.add(commit);
 
                 }
+
+            }
 
 
         }

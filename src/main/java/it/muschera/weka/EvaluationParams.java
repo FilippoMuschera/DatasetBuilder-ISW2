@@ -1,6 +1,7 @@
 package it.muschera.weka;
 
 import weka.classifiers.bayes.NaiveBayes;
+import weka.classifiers.functions.MultilayerPerceptron;
 import weka.classifiers.lazy.IBk;
 import weka.classifiers.trees.RandomForest;
 import weka.core.Instances;
@@ -12,9 +13,11 @@ public class EvaluationParams {
     private RandomForest randomForest;
     private NaiveBayes naiveBayes;
     private IBk iBk1;
-    private IBk iBkN;
+    private MultilayerPerceptron multilayerPerceptron;
     private boolean fs;
     private boolean balancing;
+    private BalancingType balancingType;
+    private boolean costSens;
 
     public BalancingType getBalancingType() {
         return balancingType;
@@ -23,9 +26,6 @@ public class EvaluationParams {
     public void setBalancingType(BalancingType balancingType) {
         this.balancingType = balancingType;
     }
-
-    private BalancingType balancingType;
-    private boolean costSens;
 
     public Instances getTesting() {
         return testing;
@@ -67,12 +67,12 @@ public class EvaluationParams {
         this.iBk1 = iBk1;
     }
 
-    public IBk getiBkN() {
-        return iBkN;
+    public MultilayerPerceptron getMultilayerPerceptron() {
+        return multilayerPerceptron;
     }
 
-    public void setiBkN(IBk iBkN) {
-        this.iBkN = iBkN;
+    public void setMultilayerPerceptron(MultilayerPerceptron multilayerPerceptron) {
+        this.multilayerPerceptron = multilayerPerceptron;
     }
 
     public boolean isFs() {

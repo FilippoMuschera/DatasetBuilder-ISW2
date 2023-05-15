@@ -12,6 +12,7 @@ public class CyclomaticComplexityCalculator {
     private CyclomaticComplexityCalculator() {
         //solo metodi statici
     }
+
     public static int calculate(JavaClass javaClass) {
         // Parse the input string using JavaParser
         JavaParser jp = new JavaParser();

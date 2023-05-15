@@ -3,18 +3,73 @@ package it.muschera.weka;
 public class WekaResultEntity {
 
 
-    private String projName;
-    private int walkForwardIterationIndex;
-    private String classifier;
-    private boolean featureSelection;
-    private boolean sampling;
-    private boolean costSensitive;
+    private final String projName;
+    private final int walkForwardIterationIndex;
+    private final String classifier;
+    private final boolean featureSelection;
+    private final boolean sampling;
+    private final boolean costSensitive;
+    private final BalancingType balancingType;
     private double precision;
     private double recall;
+    private double fscore;
     private double auc;
     private double kappa;
-    private BalancingType balancingType;
+    private double tp;
+    private double tn;
+    private double fp;
+    private double fn;
 
+
+    public WekaResultEntity(String projName, int walkForwardIterationIndex, String classifier, boolean featureSelection, boolean sampling, boolean costSensitive, BalancingType balancingType) {
+        this.projName = projName;
+        this.walkForwardIterationIndex = walkForwardIterationIndex;
+        this.classifier = classifier;
+        this.featureSelection = featureSelection;
+        this.sampling = sampling;
+        this.costSensitive = costSensitive;
+        this.balancingType = balancingType;
+    }
+
+    public double getTp() {
+        return tp;
+    }
+
+    public void setTp(double tp) {
+        this.tp = tp;
+    }
+
+    public double getFscore() {
+        return fscore;
+    }
+
+    public void setFscore(double fscore) {
+        this.fscore = fscore;
+    }
+
+    public double getTn() {
+        return tn;
+    }
+
+    public void setTn(double tn) {
+        this.tn = tn;
+    }
+
+    public double getFp() {
+        return fp;
+    }
+
+    public void setFp(double fp) {
+        this.fp = fp;
+    }
+
+    public double getFn() {
+        return fn;
+    }
+
+    public void setFn(double fn) {
+        this.fn = fn;
+    }
 
     public String getProjName() {
         return projName;
@@ -44,38 +99,35 @@ public class WekaResultEntity {
         return precision;
     }
 
+    public void setPrecision(double precision) {
+        this.precision = precision;
+    }
+
     public double getRecall() {
         return recall;
+    }
+
+    public void setRecall(double recall) {
+        this.recall = recall;
     }
 
     public double getAuc() {
         return auc;
     }
 
+    public void setAuc(double auc) {
+        this.auc = auc;
+    }
+
     public double getKappa() {
         return kappa;
+    }
+
+    public void setKappa(double kappa) {
+        this.kappa = kappa;
     }
 
     public BalancingType getBalancingType() {
         return balancingType;
     }
-
-
-    public WekaResultEntity(String projName, int walkForwardIterationIndex, String classifier, boolean featureSelection, boolean sampling, boolean costSensitive, double precision, double recall, double auc, double kappa, BalancingType balancingType) {
-        this.projName = projName;
-        this.walkForwardIterationIndex = walkForwardIterationIndex;
-        this.classifier = classifier;
-        this.featureSelection = featureSelection;
-        this.sampling = sampling;
-        this.costSensitive = costSensitive;
-        this.precision = precision;
-        this.recall = recall;
-        this.auc = auc;
-        this.kappa = kappa;
-        this.balancingType = balancingType;
-    }
-
-
-
-
 }

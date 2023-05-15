@@ -12,7 +12,7 @@ import java.util.Properties;
 
 import static java.lang.System.*;
 
-public class OpenJPAEntity implements ProjectInterface{
+public class OpenJPAEntity implements ProjectInterface {
 
     private static OpenJPAEntity singletonEntity = null;
 
@@ -51,8 +51,7 @@ public class OpenJPAEntity implements ProjectInterface{
 
 
     public void checkInit() {
-        if (this.git == null || this.repository == null)
-        {
+        if (this.git == null || this.repository == null) {
             throw new IllegalStateException("Impossibile inizializzare la repository di OpenJPA");
         }
     }

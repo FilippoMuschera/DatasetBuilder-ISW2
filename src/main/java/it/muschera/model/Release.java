@@ -15,7 +15,6 @@ public class Release {
     private final Repository repository;
 
 
-
     private int index;
     private int id;
     private String name;
@@ -34,6 +33,18 @@ public class Release {
         this.repository = project.getRepository();
         this.addCommits(project);
     }
+
+    public Release(int index, int id, String name, Date firstDate, Date lastDate) {
+
+        this.index = index;
+        this.id = id;
+        this.name = name;
+        this.firstDate = firstDate;
+        this.lastDate = lastDate;
+        this.repository = null;
+
+    }
+
 
     private void addCommits(ProjectInterface projectInterface) throws GitAPIException, IOException {
         //Data la corrente release, gli associamo tutti i commit che la compongono
@@ -84,6 +95,7 @@ public class Release {
     public Repository getRepository() {
         return repository;
     }
+
     public int getIndex() {
         return index;
     }
