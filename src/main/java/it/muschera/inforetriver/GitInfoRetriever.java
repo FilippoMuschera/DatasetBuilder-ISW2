@@ -54,12 +54,10 @@ public class GitInfoRetriever {
 
         List<RevCommit> allCommits = new ArrayList<>();
         List<Ref> allBranches = git.branchList().setListMode(ListBranchCommand.ListMode.ALL).call();
-        //git.checkout().setName("master");
 
 
         for (Ref branch : allBranches) {
             Iterable<RevCommit> commitsList = git.log().add(repository.resolve(branch.getName())).call();
-            //Iterable<RevCommit> commitsList = git.log().add(repository.resolve("master")).call();
 
             for (RevCommit commit : commitsList) {
 

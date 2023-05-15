@@ -73,7 +73,7 @@ public class JiraInfoRetriever {
 
     }
 
-    public List<Release> getJiraVersions(String projName, Boolean generateCsv) throws IOException, JSONException, ParseException, GitAPIException {
+    public List<Release> getJiraVersions(String projName) throws IOException, JSONException, ParseException, GitAPIException {
 
         //Fills the arraylist with releases dates and orders them
         //Ignores releases with missing dates
@@ -138,13 +138,15 @@ public class JiraInfoRetriever {
             }
             firstDate = lastDate;
         }
-        if (Boolean.TRUE.equals(generateCsv))
-            this.writeToCsv(releasesList, projName);
+        this.writeToCsv(releasesList, projName);
 
         return releasesList;
     }
 
     private void writeToCsv(List<Release> releasesList, String projName) {
+
+        if (!projName.equalsIgnoreCase("BOOKKEEPER") || !projName.equalsIgnoreCase("OPENJPA"))
+            return; //Non voglio il csv dei progetti con cui faccio solo cold start
 
         String outName = projName + "VersionInfo.csv";
         try (

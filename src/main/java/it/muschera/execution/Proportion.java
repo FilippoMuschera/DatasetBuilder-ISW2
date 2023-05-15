@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static java.lang.System.*;
+
 public class Proportion {
 
     private static double proportionColdStart = -1.0;
@@ -63,7 +65,7 @@ public class Proportion {
             List<JiraTicket> coldStartConsistentTickets = new ArrayList<>();
 
             try {
-                coldStartRelease = jiraInfoRetriever.getJiraVersions(proj.toString(), false);
+                coldStartRelease = jiraInfoRetriever.getJiraVersions(proj.toString());
                 coldStartTickets = jiraInfoRetriever.getAllJiraTickets(coldStartRelease, proj.toString());
                 for (JiraTicket ticket : coldStartTickets) {
 
@@ -74,7 +76,7 @@ public class Proportion {
                     }
                 }
 
-                System.out.println("++++++++++++++DEBUG: (Proj, ConsistentTickets) = (" + proj + ", " + coldStartConsistentTickets.size() + ")");
+                out.println("++++++++++++++DEBUG: (Proj, ConsistentTickets) = (" + proj + ", " + coldStartConsistentTickets.size() + ")");
                 proportions.add(Proportion.computeProportionValue(coldStartConsistentTickets));
 
 
@@ -89,7 +91,7 @@ public class Proportion {
         Collections.sort(proportions);
 
         Proportion.proportionColdStart = (proportions.get(proportions.size() / 2) + proportions.get((proportions.size() / 2) - 1)) / 2;
-        System.out.println("++++++++++++++DEBUG: Proportion cold start = " + proportionColdStart);
+        out.println("++++++++++++++DEBUG: Proportion cold start = " + proportionColdStart);
 
         return Proportion.proportionColdStart;
 

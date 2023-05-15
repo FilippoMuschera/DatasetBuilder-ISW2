@@ -48,7 +48,7 @@ public class WekaClassifier {
     }
 
     public void computeWekaMetrics(String trainingSet, String testingSet) throws Exception {
-        
+
         AvgWekaDataHolder avgWekaDataHolder = AvgWekaDataHolder.getInstance();
 
         //FEATURE SELECTION: NO, BALANCING: NO, COST SENSITIVE: NO
@@ -85,9 +85,7 @@ public class WekaClassifier {
         avgWekaDataHolder.fillAvgLists(projName, NAIVE_BAYES, evaluationList.get(1), avgWekaDataHolder.getSimpleNB(), Arrays.asList(false, false, false), BalancingType.NONE);
         avgWekaDataHolder.fillAvgLists(projName, IBK1, evaluationList.get(2), avgWekaDataHolder.getSimpleIbk(), Arrays.asList(false, false, false), BalancingType.NONE);
         avgWekaDataHolder.fillAvgLists(projName, MLP, evaluationList.get(3), avgWekaDataHolder.getSimpleMLP(), Arrays.asList(false, false, false), BalancingType.NONE);
-        
-        
-        
+
 
         //FEATURE SELECTION: NO, BALANCING: SI (UNDERSAMPLE), COST SENSITIVE: NO
 
@@ -119,7 +117,7 @@ public class WekaClassifier {
         avgWekaDataHolder.fillAvgLists(projName, RANDOM_FOREST, evaluationList.get(0), avgWekaDataHolder.getFeatureSelRF(), Arrays.asList(true, false, false), BalancingType.NONE);
         avgWekaDataHolder.fillAvgLists(projName, NAIVE_BAYES, evaluationList.get(1), avgWekaDataHolder.getFeatureSelNB(), Arrays.asList(true, false, false), BalancingType.NONE);
         avgWekaDataHolder.fillAvgLists(projName, IBK1, evaluationList.get(2), avgWekaDataHolder.getFeatureSelIbk(), Arrays.asList(true, false, false), BalancingType.NONE);
-        avgWekaDataHolder.fillAvgLists(projName,MLP,  evaluationList.get(3), avgWekaDataHolder.getFeatureSelMLP(), Arrays.asList(true, false, false), BalancingType.NONE);
+        avgWekaDataHolder.fillAvgLists(projName, MLP, evaluationList.get(3), avgWekaDataHolder.getFeatureSelMLP(), Arrays.asList(true, false, false), BalancingType.NONE);
 
         //FEATURE SLECTION: SI, BALANCING: SI (SMOTE), COST SENSITIVE: NO
         Instances smotedTrainingSet = smoteDataset(trainingFeatureSelected);
@@ -135,9 +133,10 @@ public class WekaClassifier {
 
         //FEATURE SLECTION: SI, BALANCING: SI (UNDERSAMPLING), COST SENSITIVE: NO
         evaluationParams.setTraining(underSampleDataset(trainingFeatureSelected));
+        evaluationParams.setFs(true);
         evaluationParams.setBalancingType(BalancingType.UNDERSAMPLING);
 
-
+        evaluationList = doEval(evaluationParams);
         avgWekaDataHolder.fillAvgLists(projName, RANDOM_FOREST, evaluationList.get(0), avgWekaDataHolder.getFeatureSelUnderRF(), Arrays.asList(true, true, false), BalancingType.UNDERSAMPLING);
         avgWekaDataHolder.fillAvgLists(projName, NAIVE_BAYES, evaluationList.get(1), avgWekaDataHolder.getFeatureSelUnderNB(), Arrays.asList(true, true, false), BalancingType.UNDERSAMPLING);
         avgWekaDataHolder.fillAvgLists(projName, IBK1, evaluationList.get(2), avgWekaDataHolder.getFeatureSelUnderIbk(), Arrays.asList(true, true, false), BalancingType.UNDERSAMPLING);
@@ -149,6 +148,7 @@ public class WekaClassifier {
         evaluationParams.setFs(true);
         evaluationParams.setBalancingType(BalancingType.OVERSAMPLING);
 
+        evaluationList = doEval(evaluationParams);
         avgWekaDataHolder.fillAvgLists(projName, RANDOM_FOREST, evaluationList.get(0), avgWekaDataHolder.getFeatureSelOverRF(), Arrays.asList(true, true, false), BalancingType.OVERSAMPLING);
         avgWekaDataHolder.fillAvgLists(projName, NAIVE_BAYES, evaluationList.get(1), avgWekaDataHolder.getFeatureSelOverNB(), Arrays.asList(true, true, false), BalancingType.OVERSAMPLING);
         avgWekaDataHolder.fillAvgLists(projName, IBK1, evaluationList.get(2), avgWekaDataHolder.getFeatureSelOverIbk(), Arrays.asList(true, true, false), BalancingType.OVERSAMPLING);
@@ -158,8 +158,8 @@ public class WekaClassifier {
         //FEATURE SLECTION: SI, BALANCING: NO, COST SENSITIVE: SI
         CostMatrix costMatrix = new CostMatrix(2);
         costMatrix.setCell(0, 0, 0.0);
-        costMatrix.setCell(1, 0, 10.0); //CFN = 10.0*CFP
-        costMatrix.setCell(0, 1, 1.0);
+        costMatrix.setCell(1, 0, 1.0);
+        costMatrix.setCell(0, 1, 15.0);//CFN = 15.0*CFP
         costMatrix.setCell(1, 1, 0.0);
 
         CostSensitiveClassifier costSensitiveClassifier = new CostSensitiveClassifier();
@@ -281,7 +281,6 @@ public class WekaClassifier {
         return evaluationList;
 
 
-
     }
 
     public List<Evaluation> doEval(EvaluationParams params) throws Exception {
@@ -327,7 +326,7 @@ public class WekaClassifier {
         eval4.evaluateModel(multilayerPerceptron, testing);
         addResultToSet(eval4, MLP, fs, samp, costSens, balancingType);
         evaluationList.add(eval4);
-        
+
         return evaluationList;
 
 
@@ -342,16 +341,18 @@ public class WekaClassifier {
                 fs,
                 samp,
                 costSens,
-                eval.precision(0),
-                eval.recall(0),
-                eval.areaUnderROC(0),
-                eval.kappa(),
                 balancingType
         );
         resultEntity.setTp(eval.numTruePositives(0));
         resultEntity.setTn(eval.numTrueNegatives(0));
         resultEntity.setFp(eval.numFalsePositives(0));
         resultEntity.setFn(eval.numFalseNegatives(0));
+        resultEntity.setFscore(eval.fMeasure(0));
+        resultEntity.setPrecision(eval.precision(0));
+        resultEntity.setRecall(eval.recall(0));
+        resultEntity.setAuc(eval.areaUnderROC(0));
+        resultEntity.setKappa(eval.kappa());
+
         evaluationSet.getEvaluationSetList().add(resultEntity);
     }
 

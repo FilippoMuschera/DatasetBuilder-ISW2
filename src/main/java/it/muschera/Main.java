@@ -11,11 +11,31 @@ import static java.lang.System.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
+
+        long startTime = System.nanoTime();
+
+
+        final String BK = "bookkeeper";
+        final String JPA = "openjpa";
+
         ExecutorV2.cleanEnvironment();
-        execProject("bookkeeper");
-        //execProject("openjpa");
+        execProject(BK);
+        ClassificatorReportWriter.avgReportWriter(BK); //per bookkeeper
+        ClassificatorReportWriter.cleanAvg();
+        execProject(JPA);
         ClassificatorReportWriter.writeReport();
-        ClassificatorReportWriter.avgReportWriter();
+        ClassificatorReportWriter.avgReportWriter(JPA);
+
+        long endTime = System.nanoTime();
+
+        // Calcolo del tempo di esecuzione in secondi
+        double executionTimeInSeconds = (endTime - startTime) / 1_000_000_000.0;
+
+        // Calcolo del tempo di esecuzione in minuti
+        double executionTimeInMinutes = executionTimeInSeconds / 60.0;
+
+        out.println("Il programma è stato eseguito in " + executionTimeInSeconds + " secondi (" + executionTimeInMinutes + " minuti).");
+
 
     }
 

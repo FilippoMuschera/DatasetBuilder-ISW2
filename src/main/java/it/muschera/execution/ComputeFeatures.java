@@ -5,7 +5,6 @@ import com.github.javaparser.ParseResult;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.TryStmt;
-import it.muschera.filescreators.EnumFileType;
 import it.muschera.model.JavaClass;
 import it.muschera.model.JiraTicket;
 import it.muschera.model.Release;
@@ -13,20 +12,9 @@ import it.muschera.util.CyclomaticComplexityCalculator;
 import it.muschera.util.JavaClassFinder;
 import it.muschera.util.ReleaseFinder;
 import it.muschera.util.TicketUtil;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.errors.IncorrectObjectTypeException;
-import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.revwalk.RevTree;
-import org.eclipse.jgit.revwalk.RevWalk;
-import org.eclipse.jgit.treewalk.TreeWalk;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class ComputeFeatures {
@@ -34,7 +22,7 @@ public class ComputeFeatures {
     private ComputeFeatures() {
     } //solo metodi statici
 
-    public static void computeFeatures(List<JavaClass> javaClassList, List<Release> releaseList) throws IOException, ParseException, GitAPIException {
+    public static void computeFeatures(List<JavaClass> javaClassList) {
 
         for (JavaClass javaClass : javaClassList) {
             ComputeFeatures.computeLOC(javaClass);
@@ -42,7 +30,6 @@ public class ComputeFeatures {
             ComputeFeatures.computeNAuth(javaClass);
             ComputeFeatures.computeChurnAndLocTouched(javaClass);
             ComputeFeatures.computeHandledExceptions(javaClass);
-            //ComputeFeatures.computeAge(javaClassList, releaseList, javaClass);
             ComputeFeatures.computeCyclComplexity(javaClass);
         }
 
@@ -147,12 +134,9 @@ public class ComputeFeatures {
     }
 
     public static void computeMetricNfix(List<JiraTicket> allTickets, List<JavaClass> javaClassList, List<Release> releaseList, int iteration) {
-        List<JiraTicket> admissibleTickets = new ArrayList<>();
 
-        for (JiraTicket ticket : allTickets) {
-            if (ticket.getFixVersion().getIndex() == (iteration - 1) && ticket.getOpeningVersion().getIndex() == ticket.getFixVersion().getIndex())
-                admissibleTickets.add(ticket);
-        }
+        List<JiraTicket> admissibleTickets = getTicketsForNFix(allTickets, iteration);
+
 
         for (JiraTicket ticket : admissibleTickets) {
             List<RevCommit> associatedCommits = TicketUtil.getRealisticCommitsOfTickets(ticket, releaseList, iteration);
@@ -177,5 +161,15 @@ public class ComputeFeatures {
 
         }
 
+    }
+
+    private static List<JiraTicket> getTicketsForNFix(List<JiraTicket> allTickets, int iteration) {
+        List<JiraTicket> admissibleTickets = new ArrayList<>();
+        for (JiraTicket ticket : allTickets) {
+            if (ticket.getFixVersion().getIndex() == (iteration - 1) && ticket.getOpeningVersion().getIndex() == ticket.getFixVersion().getIndex())
+                admissibleTickets.add(ticket);
+        }
+
+        return admissibleTickets;
     }
 }

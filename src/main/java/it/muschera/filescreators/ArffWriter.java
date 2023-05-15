@@ -34,8 +34,7 @@ public class ArffWriter {
             //Name of ARFF dataset
             fileWriter.append("@relation ").append(projName).append("-").append(fileNameType);
 
-            //debug test: non mettiamo la release nel dataset
-            //fileWriter.write("\n@attribute RELEASE numeric\n");
+
             fileWriter.write("\n@attribute LOC numeric\n");
             fileWriter.write("@attribute NR numeric\n");
             fileWriter.write("@attribute N_AUTH numeric\n");
@@ -66,9 +65,7 @@ public class ArffWriter {
     }
 
     public static void writeFile(FileWriter fileWriter, JavaClass javaClass, EnumFileType type) throws IOException {
-        //vedi arffwriter per debug reason
-        //fileWriter.append(Integer.toString(javaClass.getRelease().getIndex()));
-        //fileWriter.append(",");
+
         fileWriter.append(Integer.toString(javaClass.getLinesOfCode()));
         fileWriter.append(",");
         fileWriter.append(Integer.toString(javaClass.getNr()));

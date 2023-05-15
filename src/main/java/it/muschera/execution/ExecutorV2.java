@@ -3,7 +3,6 @@ package it.muschera.execution;
 import it.muschera.filescreators.ArffWriter;
 import it.muschera.filescreators.CsvWriter;
 import it.muschera.filescreators.EnumFileType;
-import it.muschera.inforetriver.GitInfoRetriever;
 import it.muschera.inforetriver.JiraInfoRetriever;
 import it.muschera.model.JavaClass;
 import it.muschera.model.JiraTicket;
@@ -26,13 +25,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static java.lang.System.err;
-import static java.lang.System.out;
+import static java.lang.System.*;
+
 
 public class ExecutorV2 {
 
+    private static final String ARFF = ".arff";
     private final String projName;
-
     /*
      * Parto da iteration = 3 e non iteration = 2 perchè la prima run con i = 2 sarebbe "superflua", dal momento che
      * avrei solamente una Release che dovrei predire senza avere training, e pertanto non potrei fare altro che predire tutti
@@ -44,8 +43,6 @@ public class ExecutorV2 {
     private List<JavaClass> allJavaClasses;
     private List<JiraTicket> allTickets;
     private List<JiraTicket> consistentTickets;
-
-
     private double p;
 
 
@@ -56,7 +53,7 @@ public class ExecutorV2 {
     public static void cleanEnvironment() throws IOException {
         File directory = new File(".");
         for (File file : Objects.requireNonNull(directory.listFiles())) {
-            if (file.isFile() && file.getName().endsWith(".csv") || file.getName().endsWith(".arff"))
+            if (file.isFile() && file.getName().endsWith(".csv") || file.getName().endsWith(ARFF))
                 Files.delete(Path.of(file.getPath()));
         }
     }
@@ -70,7 +67,7 @@ public class ExecutorV2 {
     private void buildDatasetFirstTime() throws IOException, ParseException, GitAPIException {
         this.jiraInfoRetriever = new JiraInfoRetriever();
         try {
-            this.releaseList = jiraInfoRetriever.getJiraVersions(this.projName.toUpperCase(), true);
+            this.releaseList = jiraInfoRetriever.getJiraVersions(this.projName.toUpperCase());
             this.releaseList = ReleaseFinder.cleanReleaseList(this.releaseList); //elimina release senza commit
             this.releaseList = ReleaseFinder.refactorReleaseList(this.releaseList); //riordina le release (necessario se prima qualcuna è stata eliminata perchè vuota)
         } catch (IOException | ParseException | GitAPIException e) {
@@ -101,7 +98,7 @@ public class ExecutorV2 {
         JavaClassFinder.computeCommitsOfClass(this.allJavaClasses, this.releaseList, this.releaseList.get(0).getRepository());
         out.println("JavaClassList creata correttamente");
 
-        ComputeFeatures.computeFeatures(this.allJavaClasses, this.releaseList);
+        ComputeFeatures.computeFeatures(this.allJavaClasses);
 
 
     }
@@ -287,8 +284,8 @@ public class ExecutorV2 {
             out.println("Buggyness (both real and precise) correctly evaluated for this iteration");
             this.writeFiles(false);
             out.println("Output files produced for this iteration");
-            String trainingSet = projName + "-" + "training" + "-" + this.iteration + ".arff";
-            String testingSet = projName + "-" + "testing" + "-" + this.iteration + ".arff";
+            String trainingSet = projName + "-" + "training" + "-" + this.iteration + ARFF;
+            String testingSet = projName + "-" + "testing" + "-" + this.iteration + ARFF;
 
             WekaClassifier weka = new WekaClassifier(this.projName, this.iteration);
             weka.computeWekaMetrics(trainingSet, testingSet);

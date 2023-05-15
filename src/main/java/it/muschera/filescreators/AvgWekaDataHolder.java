@@ -1,12 +1,9 @@
 package it.muschera.filescreators;
 
 import it.muschera.weka.BalancingType;
-import it.muschera.weka.EvaluationParams;
-import weka.classifiers.Classifier;
+
 import weka.classifiers.Evaluation;
-import weka.classifiers.bayes.NaiveBayes;
-import weka.classifiers.lazy.IBk;
-import weka.classifiers.trees.RandomForest;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +12,49 @@ import java.util.List;
 public class AvgWekaDataHolder {
 
     private static AvgWekaDataHolder instance = null;
+    private List<EvalBundle> simpleNB = new ArrayList<>();
+    private List<EvalBundle> simpleIbk = new ArrayList<>();
+    private List<EvalBundle> simpleRF = new ArrayList<>();
+    private List<EvalBundle> simpleMLP = new ArrayList<>();
+    private List<EvalBundle> featureSelNB = new ArrayList<>();
+    private List<EvalBundle> featureSelIbk = new ArrayList<>();
+    private List<EvalBundle> featureSelRF = new ArrayList<>();
+    private List<EvalBundle> featureSelMLP = new ArrayList<>();
+    private List<EvalBundle> featureSelUnderNB = new ArrayList<>();
+    private List<EvalBundle> featureSelUnderIbk = new ArrayList<>();
+    private List<EvalBundle> featureSelUnderRF = new ArrayList<>();
+    private List<EvalBundle> featureSelUnderMLP = new ArrayList<>();
+    private List<EvalBundle> featureSelOverNB = new ArrayList<>();
+    private List<EvalBundle> featureSelOverIbk = new ArrayList<>();
+    private List<EvalBundle> featureSelOverRF = new ArrayList<>();
+    private List<EvalBundle> featureSelOverMLP = new ArrayList<>();
+    private List<EvalBundle> featureSelSmoteNB = new ArrayList<>();
+    private List<EvalBundle> featureSelSmoteIbk = new ArrayList<>();
+    private List<EvalBundle> featureSelSmoteRF = new ArrayList<>();
+    private List<EvalBundle> featureSelSmoteMLP = new ArrayList<>();
+    private List<EvalBundle> simpleUnderNB = new ArrayList<>();
+    private List<EvalBundle> simpleUnderIbk = new ArrayList<>();
+    private List<EvalBundle> simpleUnderRF = new ArrayList<>();
+    private List<EvalBundle> simpleUnderMLP = new ArrayList<>();
+    private List<EvalBundle> costSensNB = new ArrayList<>();
+    private List<EvalBundle> costSensIbk = new ArrayList<>();
+    private List<EvalBundle> costSensRF = new ArrayList<>();
+    private List<EvalBundle> costSensMLP = new ArrayList<>();
+
+    private AvgWekaDataHolder() {
+        //Singleton
+    }
+
+    public static AvgWekaDataHolder getInstance() {
+        if (instance == null)
+            instance = new AvgWekaDataHolder();
+        return instance;
+    }
+
+    public static void cleanInstance() {
+        instance = null;
+        instance = new AvgWekaDataHolder();
+    }
 
     public List<EvalBundle> getSimpleNB() {
         return simpleNB;
@@ -240,69 +280,25 @@ public class AvgWekaDataHolder {
         this.costSensMLP = costSensMLP;
     }
 
-    private List<EvalBundle> simpleNB = new ArrayList<>();
-
-    private List<EvalBundle> simpleIbk = new ArrayList<>();
-    private List<EvalBundle> simpleRF = new ArrayList<>();
-    private List<EvalBundle> simpleMLP = new ArrayList<>();
-    private List<EvalBundle> featureSelNB = new ArrayList<>();
-    private List<EvalBundle> featureSelIbk = new ArrayList<>();
-    private List<EvalBundle> featureSelRF = new ArrayList<>();
-    private List<EvalBundle> featureSelMLP = new ArrayList<>();
-    private List<EvalBundle> featureSelUnderNB = new ArrayList<>();
-    private List<EvalBundle> featureSelUnderIbk = new ArrayList<>();
-    private List<EvalBundle> featureSelUnderRF = new ArrayList<>();
-    private List<EvalBundle> featureSelUnderMLP = new ArrayList<>();
-    private List<EvalBundle> featureSelOverNB = new ArrayList<>();
-    private List<EvalBundle> featureSelOverIbk = new ArrayList<>();
-    private List<EvalBundle> featureSelOverRF = new ArrayList<>();
-    private List<EvalBundle> featureSelOverMLP = new ArrayList<>();
-    private List<EvalBundle> featureSelSmoteNB = new ArrayList<>();
-    private List<EvalBundle> featureSelSmoteIbk = new ArrayList<>();
-    private List<EvalBundle> featureSelSmoteRF = new ArrayList<>();
-    private List<EvalBundle> featureSelSmoteMLP = new ArrayList<>();
-    private List<EvalBundle> simpleUnderNB = new ArrayList<>();
-    private List<EvalBundle> simpleUnderIbk = new ArrayList<>();
-    private List<EvalBundle> simpleUnderRF = new ArrayList<>();
-    private List<EvalBundle> simpleUnderMLP = new ArrayList<>();
-    private List<EvalBundle> costSensNB = new ArrayList<>();
-    private List<EvalBundle> costSensIbk = new ArrayList<>();
-    private List<EvalBundle> costSensRF = new ArrayList<>();
-    private List<EvalBundle> costSensMLP = new ArrayList<>();
-
-
-
-
-
-    private AvgWekaDataHolder(){
-        //Singleton
-    }
-
-    public static AvgWekaDataHolder getInstance() {
-        if (instance == null)
-            instance = new AvgWekaDataHolder();
-        return instance;
-    }
-
     public void fillAvgLists(String projName, String classifier, Evaluation evaluation, List<EvalBundle> correctList, List<Boolean> booleans, BalancingType type) {
         correctList.add(new EvalBundle(
                 Arrays.asList(projName, classifier),
                 Arrays.asList(evaluation.precision(0),
-                evaluation.recall(0),
-                evaluation.areaUnderROC(0),
-                evaluation.kappa(),
-                evaluation.numTruePositives(0),
-                evaluation.numTrueNegatives(0),
-                evaluation.numFalsePositives(0),
-                evaluation.numFalseNegatives(0),
-                evaluation.fMeasure(0)),
+                        evaluation.recall(0),
+                        evaluation.areaUnderROC(0),
+                        evaluation.kappa(),
+                        evaluation.numTruePositives(0),
+                        evaluation.numTrueNegatives(0),
+                        evaluation.numFalsePositives(0),
+                        evaluation.numFalseNegatives(0),
+                        evaluation.fMeasure(0)),
                 booleans,
                 type
         ));
-        
+
     }
 
-    public EvalBundle computeAvg(List<EvalBundle> list){
+    public EvalBundle computeAvg(List<EvalBundle> list) {
         double precision = 0;
         double recall = 0;
         double auc = 0;
@@ -327,16 +323,16 @@ public class AvgWekaDataHolder {
         int size = list.size();
         return new EvalBundle(
                 Arrays.asList(list.get(0).getProjName(),
-                list.get(0).getClassifier()),
-                Arrays.asList(precision/size,
-                recall/size,
-                auc/size,
-                kappa/size,
-                tp/size,
-                tn/size,
-                fp/size,
-                fn/size,
-                f1/size),
+                        list.get(0).getClassifier()),
+                Arrays.asList(precision / size,
+                        recall / size,
+                        auc / size,
+                        kappa / size,
+                        tp / size,
+                        tn / size,
+                        fp / size,
+                        fn / size,
+                        f1 / size),
                 list.get(0).getBools(),
                 list.get(0).getType()
 
@@ -344,7 +340,7 @@ public class AvgWekaDataHolder {
     }
 
     public List<EvalBundle> getPrintableList() {
-        List<EvalBundle>  returnList = new ArrayList<>();
+        List<EvalBundle> returnList = new ArrayList<>();
 
 
         returnList.add(this.computeAvg(simpleNB));
@@ -380,12 +376,6 @@ public class AvgWekaDataHolder {
 
 
     }
-
-
-
-
-
-
 
 
 }

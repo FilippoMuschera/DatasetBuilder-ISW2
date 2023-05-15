@@ -2,6 +2,7 @@ package it.muschera.filescreators;
 
 import it.muschera.weka.BalancingType;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,10 +28,10 @@ public class EvalBundle {
     private final boolean fs;
     private final boolean balancing;
     private final boolean costSens;
-    private BalancingType type;
+    private final BalancingType type;
 
     public EvalBundle(List<String> names, List<Double> values, List<Boolean> booleans, BalancingType type) {
-        this.checkForNaN(values);
+        values = this.checkForNaN(values);
         this.projName = names.get(0);
         this.classifier = names.get(1);
         this.precision = values.get(0);
@@ -49,11 +50,17 @@ public class EvalBundle {
 
     }
 
-    private void checkForNaN(List<Double> values) {
+    private List<Double> checkForNaN(List<Double> values) {
+        List<Double> adjustedList = new ArrayList<>();
         for (double d : values) {
-            if (d == NaN)
-                d = 0.0; //TODO DA QUI
+            if (Double.isNaN(d))
+                adjustedList.add(0.0);
+            else
+                adjustedList.add(d);
+
         }
+
+        return adjustedList;
     }
 
     public boolean isFs() {

@@ -9,31 +9,25 @@ public class WekaResultEntity {
     private final boolean featureSelection;
     private final boolean sampling;
     private final boolean costSensitive;
-    private final double precision;
-    private final double recall;
-    private final double auc;
-    private final double kappa;
+    private final BalancingType balancingType;
+    private double precision;
+    private double recall;
+    private double fscore;
+    private double auc;
+    private double kappa;
     private double tp;
-
     private double tn;
     private double fp;
     private double fn;
 
 
-    private final BalancingType balancingType;
-
-
-    public WekaResultEntity(String projName, int walkForwardIterationIndex, String classifier, boolean featureSelection, boolean sampling, boolean costSensitive, double precision, double recall, double auc, double kappa, BalancingType balancingType) {
+    public WekaResultEntity(String projName, int walkForwardIterationIndex, String classifier, boolean featureSelection, boolean sampling, boolean costSensitive, BalancingType balancingType) {
         this.projName = projName;
         this.walkForwardIterationIndex = walkForwardIterationIndex;
         this.classifier = classifier;
         this.featureSelection = featureSelection;
         this.sampling = sampling;
         this.costSensitive = costSensitive;
-        this.precision = precision;
-        this.recall = recall;
-        this.auc = auc;
-        this.kappa = kappa;
         this.balancingType = balancingType;
     }
 
@@ -43,6 +37,14 @@ public class WekaResultEntity {
 
     public void setTp(double tp) {
         this.tp = tp;
+    }
+
+    public double getFscore() {
+        return fscore;
+    }
+
+    public void setFscore(double fscore) {
+        this.fscore = fscore;
     }
 
     public double getTn() {
@@ -68,6 +70,7 @@ public class WekaResultEntity {
     public void setFn(double fn) {
         this.fn = fn;
     }
+
     public String getProjName() {
         return projName;
     }
@@ -96,21 +99,35 @@ public class WekaResultEntity {
         return precision;
     }
 
+    public void setPrecision(double precision) {
+        this.precision = precision;
+    }
+
     public double getRecall() {
         return recall;
+    }
+
+    public void setRecall(double recall) {
+        this.recall = recall;
     }
 
     public double getAuc() {
         return auc;
     }
 
+    public void setAuc(double auc) {
+        this.auc = auc;
+    }
+
     public double getKappa() {
         return kappa;
+    }
+
+    public void setKappa(double kappa) {
+        this.kappa = kappa;
     }
 
     public BalancingType getBalancingType() {
         return balancingType;
     }
-
-
 }

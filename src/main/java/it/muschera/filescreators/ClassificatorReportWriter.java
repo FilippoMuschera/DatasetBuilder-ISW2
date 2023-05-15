@@ -3,7 +3,7 @@ package it.muschera.filescreators;
 import it.muschera.weka.EvaluationSet;
 import it.muschera.weka.WekaResultEntity;
 
-import java.io.File;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -24,38 +24,40 @@ public class ClassificatorReportWriter {
         try (
                 FileWriter fileWriter = new FileWriter(fileName)
         ) {
-            fileWriter.append("Project,Iteration,Classifier,FeatureSelection,Sampling,CostSensitive,Precision,Recall,AUC,Kappa,TP,FN,FP,TN\n");
+            fileWriter.append("Project;Iteration;Classifier;FeatureSelection;Sampling;CostSensitive;Precision;Recall;FScore;AUC;Kappa;TP;FN;FP;TN\n");
 
 
             for (WekaResultEntity result : EvaluationSet.getInstance().getEvaluationSetList()) {
-                fileWriter.append(result.getProjName()).append(",");
+                fileWriter.append(result.getProjName()).append(";");
                 fileWriter.append(Integer.toString(result.getWalkForwardIterationIndex()));
-                fileWriter.append(",");
+                fileWriter.append(";");
                 fileWriter.append(result.getClassifier());
-                fileWriter.append(",");
+                fileWriter.append(";");
                 fileWriter.append(Boolean.toString(result.isFeatureSelection()));
-                fileWriter.append(",");
+                fileWriter.append(";");
                 if (result.isSampling())
                     fileWriter.append(result.getBalancingType().toString());
                 else
                     fileWriter.append("None");
-                fileWriter.append(",");
+                fileWriter.append(";");
                 fileWriter.append(Boolean.toString(result.isCostSensitive()));
-                fileWriter.append(",");
-                fileWriter.append((new DecimalFormat("#.##").format(result.getPrecision()).replace(",", ".")));
-                fileWriter.append(",");
-                fileWriter.append((new DecimalFormat("#.##").format(result.getRecall()).replace(",", ".")));
-                fileWriter.append(",");
-                fileWriter.append((new DecimalFormat("#.##").format(result.getAuc())).replace(",", "."));
-                fileWriter.append(",");
-                fileWriter.append((new DecimalFormat("#.##").format(result.getKappa())).replace(",", "."));
-                fileWriter.append(",");
+                fileWriter.append(";");
+                fileWriter.append((new DecimalFormat("#.##").format(result.getPrecision())));
+                fileWriter.append(";");
+                fileWriter.append((new DecimalFormat("#.##").format(result.getRecall())));
+                fileWriter.append(";");
+                fileWriter.append((new DecimalFormat("#.##").format(result.getFscore())));
+                fileWriter.append(";");
+                fileWriter.append((new DecimalFormat("#.##").format(result.getAuc())));
+                fileWriter.append(";");
+                fileWriter.append((new DecimalFormat("#.##").format(result.getKappa())));
+                fileWriter.append(";");
                 fileWriter.append(Double.toString(result.getTp()));
-                fileWriter.append(",");
+                fileWriter.append(";");
                 fileWriter.append(Double.toString(result.getFn()));
-                fileWriter.append(",");
+                fileWriter.append(";");
                 fileWriter.append(Double.toString(result.getFp()));
-                fileWriter.append(",");
+                fileWriter.append(";");
                 fileWriter.append(Double.toString(result.getTn()));
                 fileWriter.append("\n");
 
@@ -73,48 +75,46 @@ public class ClassificatorReportWriter {
 
     }
 
-    public static void avgReportWriter() { //TODO Alcune metriche a volte escono NaN, su una media non va bene imho
-        String fileName = "ClassificationReport-Weka-AVG.csv";
+    public static void avgReportWriter(String projName) {
+        String fileName = "ClassificationReport-Weka-AVG-" + projName +".csv";
 
         try (
                 FileWriter fileWriter = new FileWriter(fileName)
         ) {
-            fileWriter.append("Project,Classifier,FeatureSelection,Sampling,CostSensitive,Precision,Recall,FScore,AUC,Kappa,TP,FN,FP,TN\n");
-
-
+            fileWriter.append("Project;Classifier;FeatureSelection;Sampling;CostSensitive;Precision;Recall;FScore;AUC;Kappa;TP;FN;FP;TN\n");
 
 
             for (EvalBundle result : AvgWekaDataHolder.getInstance().getPrintableList()) {
-                fileWriter.append(result.getProjName()).append(",");
+                fileWriter.append(result.getProjName()).append(";");
 
                 fileWriter.append(result.getClassifier());
-                fileWriter.append(",");
+                fileWriter.append(";");
                 fileWriter.append(Boolean.toString(result.isFs()));
-                fileWriter.append(",");
+                fileWriter.append(";");
                 if (result.isBalancing())
                     fileWriter.append(result.getType().toString());
                 else
                     fileWriter.append("None");
-                fileWriter.append(",");
+                fileWriter.append(";");
                 fileWriter.append(Boolean.toString(result.isCostSens()));
-                fileWriter.append(",");
-                fileWriter.append((new DecimalFormat("#.##").format(result.getPrecision()).replace(",", ".")));
-                fileWriter.append(",");
-                fileWriter.append((new DecimalFormat("#.##").format(result.getRecall()).replace(",", ".")));
-                fileWriter.append(",");
-                fileWriter.append((new DecimalFormat("#.##").format(result.getF1()).replace(",", ".")));
-                fileWriter.append(",");
-                fileWriter.append((new DecimalFormat("#.##").format(result.getAuc())).replace(",", "."));
-                fileWriter.append(",");
-                fileWriter.append((new DecimalFormat("#.##").format(result.getKappa())).replace(",", "."));
-                fileWriter.append(",");
-                fileWriter.append((new DecimalFormat("#.##").format(result.getTp()).replace(",", ".")));
-                fileWriter.append(",");
-                fileWriter.append((new DecimalFormat("#.##").format(result.getFn()).replace(",", ".")));
-                fileWriter.append(",");
-                fileWriter.append((new DecimalFormat("#.##").format(result.getFp()).replace(",", ".")));
-                fileWriter.append(",");
-                fileWriter.append((new DecimalFormat("#.##").format(result.getTn()).replace(",", ".")));
+                fileWriter.append(";");
+                fileWriter.append((new DecimalFormat("#.##").format(result.getPrecision())));
+                fileWriter.append(";");
+                fileWriter.append((new DecimalFormat("#.##").format(result.getRecall())));
+                fileWriter.append(";");
+                fileWriter.append((new DecimalFormat("#.##").format(result.getF1())));
+                fileWriter.append(";");
+                fileWriter.append((new DecimalFormat("#.##").format(result.getAuc())));
+                fileWriter.append(";");
+                fileWriter.append((new DecimalFormat("#.##").format(result.getKappa())));
+                fileWriter.append(";");
+                fileWriter.append((new DecimalFormat("#.##").format(result.getTp())));
+                fileWriter.append(";");
+                fileWriter.append((new DecimalFormat("#.##").format(result.getFn())));
+                fileWriter.append(";");
+                fileWriter.append((new DecimalFormat("#.##").format(result.getFp())));
+                fileWriter.append(";");
+                fileWriter.append((new DecimalFormat("#.##").format(result.getTn())));
                 fileWriter.append("\n");
 
 
@@ -131,4 +131,7 @@ public class ClassificatorReportWriter {
     }
 
 
+    public static void cleanAvg() {
+        AvgWekaDataHolder.cleanInstance(); //ripulisce le medie dai valori del precedente progetto
+    }
 }
