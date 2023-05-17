@@ -282,7 +282,7 @@ public class ExecutorV2 {
             this.evaluateBuggynessPrecisely();
             ComputeFeatures.computeMetricNfix(this.allTickets, this.allJavaClasses, this.releaseList, this.iteration); //lo faccio qui perchè mi servono i ticket, e va fatto iter per iter
             out.println("Buggyness (both real and precise) correctly evaluated for this iteration");
-            this.writeFiles(false);
+            this.writeFiles(true);
             out.println("Output files produced for this iteration");
             String trainingSet = projName + "-" + "training" + "-" + this.iteration + ARFF;
             String testingSet = projName + "-" + "testing" + "-" + this.iteration + ARFF;

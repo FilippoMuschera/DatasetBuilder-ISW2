@@ -145,7 +145,7 @@ public class JiraInfoRetriever {
 
     private void writeToCsv(List<Release> releasesList, String projName) {
 
-        if (!projName.equalsIgnoreCase("BOOKKEEPER") || !projName.equalsIgnoreCase("OPENJPA"))
+        if (!projName.equalsIgnoreCase("BOOKKEEPER") && !projName.equalsIgnoreCase("OPENJPA"))
             return; //Non voglio il csv dei progetti con cui faccio solo cold start
 
         String outName = projName + "VersionInfo.csv";
