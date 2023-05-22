@@ -108,6 +108,7 @@ public class ExecutorV2 {
         try {
 
             this.allTickets = this.jiraInfoRetriever.getAllJiraTickets(this.releaseList, this.projName);
+            out.println("----- Total ticket number: " + this.allTickets.size() + " -----");
         } catch (IOException | ParseException e) {
             err.println("Errore nella raccolta dei Ticket di jira per " + this.projName);
             e.printStackTrace();
@@ -258,6 +259,7 @@ public class ExecutorV2 {
     }
 
     public void runV2() throws Exception {
+        out.println("******** " + projName.toUpperCase() + " ********");
         out.println("Starting... Preparing to build the initial dataset structures");
         this.buildDatasetFirstTime();
         this.getAllTickets();
@@ -271,7 +273,7 @@ public class ExecutorV2 {
             //prendiamo solo i ticket che esistevano al momento della nostra iterazione
             List<JiraTicket> truncatedTicketList = new ArrayList<>();
             for (JiraTicket ticket : this.consistentTickets) {
-                if (ticket.getOpeningVersion().getIndex() <= this.iteration) {
+                if (ticket.getFixVersion().getIndex() <= this.iteration) {
                     truncatedTicketList.add(ticket);
                 }
             }
@@ -294,9 +296,11 @@ public class ExecutorV2 {
                 isThereNextIteration = false;
             else
                 this.iteration++;
-            out.println("******************************");
+            out.println("******************************\n");
 
         }
+
+        out.println("\n\n");
 
     }
 
