@@ -34,6 +34,7 @@ public class JavaClass {
     private List<Integer> deletedLinesList = new ArrayList<>();
 
     private RevCommit firstAppearance = null;
+    private List<String> processedTickets = new ArrayList<>(); //Tengo conto dei ticket per cui ho già aggiornato nfix
 
 
     private int linesOfCode = 0;
@@ -149,8 +150,11 @@ public class JavaClass {
         return nFix;
     }
 
-    public void setnFix(int nFix) {
-        this.nFix = nFix;
+    public void setnFix(int nFix, String key) {
+        if (!this.processedTickets.contains(key)) {
+            this.nFix = nFix;
+            this.processedTickets.add(key);
+        }
     }
 
     public String getName() {

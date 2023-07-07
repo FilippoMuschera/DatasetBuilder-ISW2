@@ -80,7 +80,7 @@ public class JavaClassFinder {
 
                 if (type.equals(EnumFileType.TRAINING)) {
                     javaClass.setBuggyRealistic(true);
-                    javaClass.setnFix(javaClass.getnFix() + 1);
+                    javaClass.setnFix(javaClass.getnFix() + 1, ticket.getKey());
                 } else if (type.equals(EnumFileType.TESTING))
                     javaClass.setBuggyPrecise(true);
 

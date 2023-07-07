@@ -151,7 +151,7 @@ public class ComputeFeatures {
 
                     for (JavaClass javaClass : javaClassList) {
                         if (className.equals(javaClass.getName()))
-                            javaClass.setnFix(javaClass.getnFix() + 1);
+                            javaClass.setnFix(javaClass.getnFix() + 1, ticket.getKey());
                     }
 
                 }
