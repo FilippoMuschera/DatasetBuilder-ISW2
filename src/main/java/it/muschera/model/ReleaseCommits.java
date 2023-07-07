@@ -56,15 +56,15 @@ public class ReleaseCommits {
 
         this.javaClasses = new HashMap<>();
 
-        RevTree tree = commit.getTree();    //We get the tree of the files and the directories that were belonging to the repository when commit was pushed
+        RevTree tree = commit.getTree();    //Prende la struttura dei file al momento del commit
         try (TreeWalk treeWalk = new TreeWalk(release.getRepository())) {    //We use a TreeWalk to iterate over all files in the Tree recursively
             treeWalk.addTree(tree);
             treeWalk.setRecursive(true);
 
             while (treeWalk.next()) {
-                //We are keeping only Java classes that are not involved in tests
+                //Non vogliamo i test
                 if (treeWalk.getPathString().contains(".java") && !treeWalk.getPathString().contains("/test/")) {
-                    //We are retrieving (name class, content class) couples
+                    //Prendiamo nome della classe e il suo codice
                     javaClasses.put(treeWalk.getPathString(), new String(release.getRepository().open(treeWalk.getObjectId(0)).getBytes(), StandardCharsets.UTF_8));
                 }
             }

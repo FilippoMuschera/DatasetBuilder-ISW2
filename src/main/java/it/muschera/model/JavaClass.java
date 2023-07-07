@@ -34,7 +34,7 @@ public class JavaClass {
     private List<Integer> deletedLinesList = new ArrayList<>();
 
     private RevCommit firstAppearance = null;
-    private List<String> processedTickets = new ArrayList<>(); //Tengo conto dei ticket per cui ho già aggiornato nfix
+    private final List<String> processedTickets = new ArrayList<>(); //Tengo conto dei ticket per cui ho già aggiornato nfix
 
 
     private int linesOfCode = 0;
@@ -99,8 +99,8 @@ public class JavaClass {
                 }
 
             } catch (ArrayIndexOutOfBoundsException e) {
-                //se il commit non ha un parent non posso calcoalre le linee aggiunte/rimosse
-                //di conseguenza la lista rimarra vuota e le metriche relative rimarranno
+                //se il commit non ha un parent non posso calcolare le linee aggiunte/rimosse
+                //di conseguenza la lista rimarrà vuota e le metriche relative rimarranno
                 //inizializzate a zero, come da inizializzazione della classe
 
             }

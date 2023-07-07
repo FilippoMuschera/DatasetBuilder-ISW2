@@ -112,7 +112,7 @@ public class JavaClassFinder {
     }
 
     public static List<String> getClassesModifiedByCommit(RevCommit commit, Repository repo) throws IOException {
-        List<String> modifiedClasses = new ArrayList<>();    //Here there will be the names of the classes that have been modified by the commit
+        List<String> modifiedClasses = new ArrayList<>();
 
         try (DiffFormatter diffFormatter = new DiffFormatter(DisabledOutputStream.INSTANCE);
              ObjectReader reader = repo.newObjectReader()) {
@@ -121,7 +121,7 @@ public class JavaClassFinder {
             ObjectId newTree = commit.getTree();
             newTreeIter.reset(reader, newTree);
 
-            RevCommit commitParent = commit.getParent(0);    //It's the previous commit of the commit we are considering
+            RevCommit commitParent = commit.getParent(0);
             CanonicalTreeParser oldTreeIter = new CanonicalTreeParser();
             ObjectId oldTree = commitParent.getTree();
             oldTreeIter.reset(reader, oldTree);
@@ -129,9 +129,9 @@ public class JavaClassFinder {
             diffFormatter.setRepository(repo);
             List<DiffEntry> entries = diffFormatter.scan(oldTreeIter, newTreeIter);
 
-            //Every entry contains info for each file involved in the commit (old path name, new path name, change type (that could be MODIFY, ADD, RENAME, etc.))
+            //Analizziamo i tipi di modifiche effettuate dal commit (Modify/Add/Refactoring ecc...)
             for (DiffEntry entry : entries) {
-                //We are keeping only Java classes that are not involved in tests
+                //Non ci interessano i test
                 if (entry.getChangeType().equals(DiffEntry.ChangeType.MODIFY) && entry.getNewPath().contains(".java") && !entry.getNewPath().contains("/test/")) {
                     modifiedClasses.add(entry.getNewPath());
                 }
@@ -139,7 +139,7 @@ public class JavaClassFinder {
             }
 
         } catch (ArrayIndexOutOfBoundsException e) {
-            //commit has no parents: skip this commit, return an empty list and go on
+            //se il commit precedente non c'è vado avanti
 
         }
 
@@ -150,7 +150,7 @@ public class JavaClassFinder {
     public static void updateJavaClassCommits(List<JavaClass> javaClasses, String className, Integer associatedRelease, RevCommit commit) {
 
         for (JavaClass javaClass : javaClasses) {
-            //if javaClass has been modified by commit (that is className) and is related to the same release of commit, then add commit to javaClass.commits
+            //se il commit ha modificato la classe lo aggiungo alla lista
             if (javaClass.getName().equals(className) && javaClass.getRelease().getIndex() == associatedRelease && !javaClass.getCommitsInvolved().contains(commit)) {
                 javaClass.getCommitsInvolved().add(commit);
 

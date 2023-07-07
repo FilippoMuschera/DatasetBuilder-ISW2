@@ -48,7 +48,7 @@ public class Release {
 
     private void addCommits(ProjectInterface projectInterface) throws GitAPIException, IOException {
         //Data la corrente release, gli associamo tutti i commit che la compongono
-        GitInfoRetriever gitInfoRetriever = new GitInfoRetriever(this.repository);
+        GitInfoRetriever gitInfoRetriever = new GitInfoRetriever();
         List<RevCommit> allCommits = gitInfoRetriever.getAllCommits(projectInterface.getGit(), projectInterface.getRepository());
         this.releaseCommits = gitInfoRetriever.getCommitsOfRelease(allCommits, this);
     }

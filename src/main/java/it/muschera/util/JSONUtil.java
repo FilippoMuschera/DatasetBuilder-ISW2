@@ -9,10 +9,8 @@ import java.nio.charset.StandardCharsets;
 
 public class JSONUtil {
 
-    //This private constructor is meant to hide the public one: utility classes do not have to be instantiated.
-    private JSONUtil() {
-        throw new IllegalStateException("This class does not have to be instantiated.");
-    }
+
+    private JSONUtil() {/*solo metodi statici*/}
 
     private static String readAll(Reader rd) throws IOException {
 

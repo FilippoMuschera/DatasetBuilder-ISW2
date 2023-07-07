@@ -31,7 +31,6 @@ public class ArffWriter {
 
         ) {
 
-            //Name of ARFF dataset
             fileWriter.append("@relation ").append(projName).append("-").append(fileNameType);
 
 

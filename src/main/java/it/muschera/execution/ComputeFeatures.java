@@ -113,7 +113,7 @@ public class ComputeFeatures {
 
         }
 
-        //If a class has 0 revisions, its AvgLocAdded and AvgChurn are 0 (see initialization above).
+
         if (!javaClass.getAddedLinesList().isEmpty()) {
             avgLOC = 1.0 * sumLOC / javaClass.getAddedLinesList().size();
             DecimalFormat df = new DecimalFormat("#.##");
