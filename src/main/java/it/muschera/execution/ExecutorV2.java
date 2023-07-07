@@ -64,7 +64,7 @@ public class ExecutorV2 {
      * una volta sola, e poi ad ogni iterazione ne andremo a usare una porzione. Ogni javaClass poi verrà identificata come buggy, ad ogni terazione sia in modo
      * REALISTICO per il training, che PERCISO per il testing.
      */
-    private void buildDatasetFirstTime() throws IOException, ParseException, GitAPIException {
+    private void buildDatasetFirstTime() throws IOException {
         this.jiraInfoRetriever = new JiraInfoRetriever();
         try {
             this.releaseList = jiraInfoRetriever.getJiraVersions(this.projName.toUpperCase());
@@ -143,6 +143,12 @@ public class ExecutorV2 {
     }
 
     private void evaluateBuggynessRealistically() {
+
+        //Prima resetto la buggyness delle classi, nel caso in cui proportion diminuisce, per assicurarmi di non avere
+        //classi buggy dove non dovrei
+        for (JavaClass jc : this.allJavaClasses)
+            jc.setBuggyRealistic(false);
+
 
         List<JiraTicket> fixedTicketsRealistic = new ArrayList<>();
 
