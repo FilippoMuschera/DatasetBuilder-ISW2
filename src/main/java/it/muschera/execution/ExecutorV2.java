@@ -136,7 +136,7 @@ public class ExecutorV2 {
     private void doProportion(List<JiraTicket> ticketList) {
         out.println("Number of consistent tickets for iteration " + this.iteration + " is " + ticketList.size());
         if (ticketList.size() >= 5) {
-            this.p = Proportion.computeProportionValue(this.consistentTickets);
+            this.p = Proportion.computeProportionValue(ticketList);
         } else {
             this.p = Proportion.coldStart();
         }
@@ -290,7 +290,7 @@ public class ExecutorV2 {
             this.evaluateBuggynessPrecisely();
             ComputeFeatures.computeMetricNfix(this.allTickets, this.allJavaClasses, this.releaseList, this.iteration); //lo faccio qui perchè mi servono i ticket, e va fatto iter per iter
             out.println("Buggyness (both real and precise) correctly evaluated for this iteration");
-            this.writeFiles(true);
+            this.writeFiles(false);
             out.println("Output files produced for this iteration");
             String trainingSet = projName + "-" + "training" + "-" + this.iteration + ARFF;
             String testingSet = projName + "-" + "testing" + "-" + this.iteration + ARFF;
