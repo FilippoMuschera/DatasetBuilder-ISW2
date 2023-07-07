@@ -9,20 +9,35 @@ import java.util.List;
 
 public class TicketUtil {
 
+
     private TicketUtil() {
         //solo metodi statici
     }
 
     public static boolean isConsistent(JiraTicket ticket) {
 
+        final int INFINITE = Integer.MAX_VALUE;
+
+
         boolean isConsistent = false;
+
 
         if (ticket.getAffectedVersions() == null || ticket.getAffectedVersions().isEmpty()) {
             //Se il ticket non ha affected versions, non ci serve per il calcolo del proportion e lo scartiamo
             return false;
         }
 
-        if (ticket.getOpeningVersion().getIndex() > ticket.getFixVersion().getIndex()) //ticket banalmente errato
+        if (ticket.getOpeningVersion().getIndex() >= ticket.getFixVersion().getIndex()) //ticket banalmente errato
+            return false;
+
+        //si assume che le IV non siano per forza ordinate
+        int iv = INFINITE;
+        for (Release release : ticket.getAffectedVersions()) {
+            if (release.getIndex() <= iv)
+                iv = release.getIndex();
+        }
+
+        if (iv > ticket.getOpeningVersion().getIndex())
             return false;
 
         for (Release affectedVersion : ticket.getAffectedVersions()) {
@@ -32,12 +47,27 @@ public class TicketUtil {
                 return false;
             }
 
+            //Dal paper del professor Falessi su Proportion:
+            /*
+             * "An AV information is consistent when the earliest AV occurs before OV. The rationale is that the defect
+             * must have affacted a version that occurred at least at the moment when the defect report had been
+             * created. That is, a defect cannot have been injected after the related failure had been observed".
+             *
+             * In sostanza, il bug doveva essere presente al momento della OV, altrimenti su che bug si apre il ticket,
+             * su uno "futuro"? Non sarebbe corretto -> non sarebbe consistente.
+             * Quindi si "dichiara" consistente il ticket solo se la OV è compresa tra le AV.
+             */
+
             if (affectedVersion.getIndex() == ticket.getOpeningVersion().getIndex())
                 isConsistent = true; //L'opening version deve essere contenuta tra le affected version per essere consistente
         }
+        if (iv > ticket.getFixVersion().getIndex())
+            return false;
+
 
         /*
          * Quindi, consideriamo un ticket consistente se:
+         * 0) OV < FV (sarebbe un ticket assurdo altrimenti)
          * 1) Ha delle affected version
          * 2) la fix version non è anche compresa tra le affected versions
          * 3) La opening version è compresa tra le affected version
