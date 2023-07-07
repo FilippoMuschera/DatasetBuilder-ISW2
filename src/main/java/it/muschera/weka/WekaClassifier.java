@@ -10,6 +10,7 @@ import weka.classifiers.functions.MultilayerPerceptron;
 import weka.classifiers.lazy.IBk;
 import weka.classifiers.meta.CostSensitiveClassifier;
 import weka.classifiers.trees.RandomForest;
+import weka.core.AttributeStats;
 import weka.core.Instances;
 import weka.core.SelectedTag;
 import weka.core.converters.ConverterUtils.DataSource;
@@ -179,6 +180,20 @@ public class WekaClassifier {
         training.setClassIndex(training.numAttributes() - 1);
         Resample resample = new Resample();
         resample.setBiasToUniformClass(1.0);
+
+        AttributeStats attributeStats = training.attributeStats(training.classIndex());
+        int[] classCounts = attributeStats.nominalCounts;
+        int biggerClass = Math.max(classCounts[0], classCounts[1]);
+        int smallerClass = Math.min(classCounts[0], classCounts[1]);
+        /*
+         * Dalla documentazione di WEKA (https://waikato.github.io/weka-blog/posts/2019-01-30-sampling/)
+         * sampleSizePercent=Y, where Y/2 is (approximately) the percentage of data that belongs to the majority class.
+         * Quindi sampleSizePercent = 2*100*(#istanze classe maggioranza)/(#istanze totali)
+         */
+        double oversamplingPercent = 2 * 100 * (double) biggerClass / (biggerClass + smallerClass);
+
+        resample.setNoReplacement(false);
+        resample.setSampleSizePercent(oversamplingPercent);
         resample.setInputFormat(training);
 
         return Filter.useFilter(training, resample);
