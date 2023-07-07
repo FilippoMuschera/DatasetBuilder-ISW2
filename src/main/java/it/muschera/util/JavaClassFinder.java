@@ -89,18 +89,6 @@ public class JavaClassFinder {
 
     }
 
-    public static JavaClass cloneJavaClass(JavaClass javaClass) {
-        JavaClass newJavaClass = new JavaClass(
-                javaClass.getName(),
-                javaClass.getContent(),
-                javaClass.getRelease()
-        );
-
-        newJavaClass.setCommitsInvolved(javaClass.getCommitsInvolved());
-        return newJavaClass;
-
-    }
-
     public static void computeCommitsOfClass(List<JavaClass> allJavaClassList, List<Release> releaseList, Repository repository) throws IOException {
 
         Map<RevCommit, Integer> commitAndRelease = new HashMap<>();
