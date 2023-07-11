@@ -160,7 +160,7 @@ public class WekaClassifier {
         CostMatrix costMatrix = new CostMatrix(2);
         costMatrix.setCell(0, 0, 0.0);
         costMatrix.setCell(1, 0, 1.0);
-        costMatrix.setCell(0, 1, 15.0);//CFN = 15.0*CFP
+        costMatrix.setCell(0, 1, 10.0);//CFN = 10.0*CFP
         costMatrix.setCell(1, 1, 0.0);
 
         CostSensitiveClassifier costSensitiveClassifier = new CostSensitiveClassifier();
