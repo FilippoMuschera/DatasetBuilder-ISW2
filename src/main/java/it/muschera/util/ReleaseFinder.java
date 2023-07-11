@@ -58,11 +58,7 @@ public class ReleaseFinder {
     public static List<Release> refactorReleaseList(List<Release> releaseList) {
         int i = 1;
         List<Release> adjustedReleaseList = new ArrayList<>();
-        for (Release release : releaseList) {
-            if (release.getReleaseCommits() == null) {
-                releaseList.remove(release);
-            }
-        }
+        releaseList.removeIf(release -> release.getReleaseCommits() == null);
         for (Release release : releaseList) {
             release.setIndex(i);
             adjustedReleaseList.add(release);
@@ -72,12 +68,4 @@ public class ReleaseFinder {
         return adjustedReleaseList;
     }
 
-    public static Release findByIndex(int relIndex, List<Release> releaseList) {
-        for (Release release : releaseList) {
-            if (release.getIndex() == relIndex)
-                return release;
-        }
-
-        return null;
-    }
 }
