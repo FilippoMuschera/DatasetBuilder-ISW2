@@ -160,4 +160,9 @@ public class JavaClassFinder {
 
     }
 
+    public static void prepareClasses(List<JavaClass> javaClassList) {
+        for (JavaClass jc : javaClassList)
+            jc.setBuggyRealistic(false);
+    }
+
 }

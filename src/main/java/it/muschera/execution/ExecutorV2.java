@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static it.muschera.util.JavaClassFinder.prepareClasses;
 import static java.lang.System.*;
 
 
@@ -144,12 +145,8 @@ public class ExecutorV2 {
 
     private void evaluateBuggynessRealistically() {
 
-        //Prima resetto la buggyness delle classi, nel caso in cui proportion diminuisce, per assicurarmi di non avere
-        //classi buggy dove non dovrei
-        for (JavaClass jc : this.allJavaClasses)
-            jc.setBuggyRealistic(false);
 
-
+        prepareClasses(this.allJavaClasses);
         List<JiraTicket> fixedTicketsRealistic = new ArrayList<>();
 
         for (JiraTicket consistentTicket : this.consistentTickets) {
