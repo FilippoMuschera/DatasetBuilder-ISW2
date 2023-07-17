@@ -1,8 +1,8 @@
 package it.muschera.weka;
 
 import it.muschera.filescreators.AvgWekaDataHolder;
+import weka.attributeSelection.BestFirst;
 import weka.attributeSelection.CfsSubsetEval;
-import weka.attributeSelection.GreedyStepwise;
 import weka.classifiers.CostMatrix;
 import weka.classifiers.Evaluation;
 import weka.classifiers.bayes.NaiveBayes;
@@ -13,6 +13,7 @@ import weka.classifiers.trees.RandomForest;
 import weka.core.AttributeStats;
 import weka.core.Instances;
 import weka.core.SelectedTag;
+import weka.core.Utils;
 import weka.core.converters.ConverterUtils.DataSource;
 import weka.filters.Filter;
 import weka.filters.supervised.attribute.AttributeSelection;
@@ -203,16 +204,18 @@ public class WekaClassifier {
     private List<Instances> featureSelection(Instances training, Instances testing) throws Exception {
         // setup filter
         AttributeSelection filter = new AttributeSelection();
-        CfsSubsetEval eval = new CfsSubsetEval();
-        GreedyStepwise search = new GreedyStepwise();
+        CfsSubsetEval cfsSubsetEval = new CfsSubsetEval();
 
-        search.setSearchBackwards(true);
-        filter.setEvaluator(eval);
-        filter.setSearch(search);
+        BestFirst bestFirst = new BestFirst();
+        bestFirst.setOptions(Utils.splitOptions("-D 1")); //1 corrisponde alla forward search -> ci aspettiamo un subset piccolo -> usiamo forward
+        filter.setEvaluator(cfsSubsetEval);
+        filter.setSearch(bestFirst);
         filter.setInputFormat(training);
 
         Instances newTraining = Filter.useFilter(training, filter);
+        newTraining.setClassIndex(newTraining.numAttributes() - 1);
         Instances newTesting = Filter.useFilter(testing, filter);
+        newTesting.setClassIndex(newTesting.numAttributes() - 1);
 
         List<Instances> returnList = new ArrayList<>();
         returnList.add(newTraining);
