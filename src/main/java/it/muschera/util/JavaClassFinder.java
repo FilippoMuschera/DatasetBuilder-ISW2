@@ -1,5 +1,6 @@
 package it.muschera.util;
 
+
 import it.muschera.filescreators.EnumFileType;
 import it.muschera.model.JavaClass;
 import it.muschera.model.JiraTicket;
@@ -15,6 +16,7 @@ import org.eclipse.jgit.util.io.DisabledOutputStream;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Logger;
 
 import static java.lang.System.*;
 
@@ -65,7 +67,8 @@ public class JavaClassFinder {
 
         } catch (IOException e) {
             err.println("Errore nel diff tra i commit [JavaClassFinder]");
-            e.printStackTrace();
+            Logger logger = Logger.getLogger(JavaClassFinder.class.getName());
+            logger.info(e.getMessage());
         }
 
         return Collections.emptyList();

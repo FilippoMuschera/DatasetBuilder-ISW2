@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.logging.Logger;
 
 import static it.muschera.util.JSONUtil.readJsonFromUrl;
 import static java.lang.System.*;
@@ -176,7 +177,8 @@ public class JiraInfoRetriever {
 
         } catch (Exception e) {
             out.println("Error in csv writer");
-            e.printStackTrace();
+            Logger logger = Logger.getLogger(JiraInfoRetriever.class.getName());
+            logger.info(e.getMessage());
         }
 
     }

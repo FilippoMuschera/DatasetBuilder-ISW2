@@ -1,9 +1,11 @@
 package it.muschera.filescreators;
 
+
 import it.muschera.model.JavaClass;
 
 import java.io.FileWriter;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static java.lang.System.*;
 
@@ -45,7 +47,8 @@ public class CsvWriter {
 
         } catch (Exception e) {
             out.println("Error in csv writer");
-            e.printStackTrace();
+            Logger logger = Logger.getLogger(CsvWriter.class.getName());
+            logger.info(e.getMessage());
         }
     }
 

@@ -1,5 +1,6 @@
 package it.muschera.filescreators;
 
+
 import it.muschera.weka.EvaluationSet;
 import it.muschera.weka.WekaResultEntity;
 
@@ -7,6 +8,7 @@ import it.muschera.weka.WekaResultEntity;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.logging.Logger;
 
 import static java.lang.System.*;
 
@@ -67,7 +69,8 @@ public class ClassificatorReportWriter {
 
         } catch (IOException e) {
             err.println("Impossible creare .csv report");
-            e.printStackTrace();
+            Logger logger = Logger.getLogger(ClassificatorReportWriter.class.getName());
+            logger.info(e.getMessage());
 
 
         }
@@ -123,7 +126,8 @@ public class ClassificatorReportWriter {
 
         } catch (IOException e) {
             err.println("Impossible creare .csv report");
-            e.printStackTrace();
+            Logger logger = Logger.getLogger(ClassificatorReportWriter.class.getName());
+            logger.info(e.getMessage());
 
 
         }

@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import static java.lang.System.*;
 
@@ -30,7 +31,8 @@ public class OpenJPAEntity implements ProjectInterface {
             this.git = new Git(this.repository);
         } catch (IOException e) {
             err.println("Path of Repository may be incorrect");
-            e.printStackTrace();
+            Logger logger = Logger.getLogger(OpenJPAEntity.class.getName());
+            logger.info(e.getMessage());
         }
     }
 

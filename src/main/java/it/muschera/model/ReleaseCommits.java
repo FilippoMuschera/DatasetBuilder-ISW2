@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 //Questa classe, che viene referenziata da una classe Release, racchiude tutti i commit di quella Release
 public class ReleaseCommits {
@@ -69,7 +70,8 @@ public class ReleaseCommits {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger logger = Logger.getLogger(ReleaseCommits.class.getName());
+            logger.info(e.getMessage());
         }
 
     }

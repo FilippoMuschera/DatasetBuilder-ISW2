@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static java.lang.System.*;
 
@@ -59,7 +60,8 @@ public class ArffWriter {
 
         } catch (Exception e) {
             out.println("Error in arff writer");
-            e.printStackTrace();
+            Logger logger = Logger.getLogger(ArffWriter.class.getName());
+            logger.info(e.getMessage());
         }
     }
 

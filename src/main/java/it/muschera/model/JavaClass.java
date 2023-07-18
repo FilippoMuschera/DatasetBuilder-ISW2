@@ -10,6 +10,7 @@ import org.eclipse.jgit.util.io.DisabledOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static java.lang.System.*;
 
@@ -73,7 +74,8 @@ public class JavaClass {
             computeAddedAndDeletedLinesList(this);
         } catch (IOException e) {
             err.println("Impossibile calcolare added/deleted lines per la classe");
-            e.printStackTrace();
+            Logger logger = Logger.getLogger(JavaClass.class.getName());
+            logger.info(e.getMessage());
         }
     }
 

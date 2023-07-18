@@ -6,6 +6,7 @@ import it.muschera.execution.ExecutorV2;
 import it.muschera.filescreators.ClassificatorReportWriter;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import static java.lang.System.*;
 
@@ -59,7 +60,8 @@ public class Main {
             exec.runV2();
         } catch (Exception e) {
             err.println("Non è stato possibile eseguire il programma");
-            e.printStackTrace();
+            Logger logger = Logger.getLogger(Main.class.getName());
+            logger.info(e.getMessage());
         }
         out.println("All done");
     }

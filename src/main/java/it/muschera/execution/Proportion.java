@@ -12,6 +12,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static java.lang.System.*;
 
@@ -81,7 +82,8 @@ public class Proportion {
 
 
             } catch (IOException | GitAPIException | ParseException e) {
-                e.printStackTrace();
+                Logger logger = Logger.getLogger(Proportion.class.getName());
+                logger.info(e.getMessage());
             }
 
 

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 import static it.muschera.util.JavaClassFinder.prepareClasses;
 import static java.lang.System.*;
@@ -73,7 +74,8 @@ public class ExecutorV2 {
             this.releaseList = ReleaseFinder.refactorReleaseList(this.releaseList); //riordina le release (necessario se prima qualcuna è stata eliminata perchè vuota)
         } catch (IOException | ParseException | GitAPIException e) {
             err.println("Errore nella lettura delle versioni da Jira");
-            e.printStackTrace();
+            Logger logger = Logger.getLogger(ExecutorV2.class.getName());
+            logger.info(e.getMessage());
         }
 
         out.println("Versioni di " + projName + " caricate correttamente");
@@ -112,7 +114,8 @@ public class ExecutorV2 {
             out.println("----- Total ticket number: " + this.allTickets.size() + " -----");
         } catch (IOException | ParseException e) {
             err.println("Errore nella raccolta dei Ticket di jira per " + this.projName);
-            e.printStackTrace();
+            Logger logger = Logger.getLogger(ExecutorV2.class.getName());
+            logger.info(e.getMessage());
         }
 
 
